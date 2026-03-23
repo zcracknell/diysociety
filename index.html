@@ -23,7 +23,474 @@
     --glow-red: 0 0 18px rgba(255,75,110,0.4);
   }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ── SAMENESS DOMINANCE — inverted minimalist mode ────────────
+     Applied when samenessScore ratio exceeds 65%.
+     The interface inverts to a stark white — clinical, empty,
+     and quietly unsettling. Colour, glow, and decoration are
+     stripped away. What remains is pure, ordered, identical.
+     Inspired by the visual language of conformist design:
+     maximum whitespace, navy text, zero ornamentation.
+     Transitions are slow and deliberate — the world becomes
+     lighter as freedom drains from it.
+  ─────────────────────────────────────────────────────────── */
+  body {
+    transition:
+      background-color 2.2s ease,
+      color 2.2s ease;
+  }
+
+  body.sameness-dominance {
+    --bg:       #f5f4f0;
+    --bg2:      #ede9e2;
+    --panel:    rgba(255, 255, 255, 0.96);
+    --border:   rgba(30, 45, 80, 0.12);
+    --accent:   #1e2d50;
+    --accent2:  #3a4a6b;
+    --accent3:  #2c3a5a;
+    --text:     #1e2d50;
+    --text-dim: #3a4a6b;
+    --glow:     none;
+    --glow-red: none;
+    background-color: #f5f4f0 !important;
+  }
+
+  /* Fade all elements that use colour variables */
+  *, *::before, *::after {
+    transition:
+      color            2s ease,
+      background       2s ease,
+      background-color 2s ease,
+      border-color     2s ease,
+      box-shadow       2s ease,
+      opacity          2s ease;
+  }
+
+  /* Stars become a ghosted watermark letterform — barely there */
+  body.sameness-dominance #stars {
+    opacity: 0.04;
+    transition: opacity 2.8s ease;
+  }
+  body.sameness-dominance #starCanvas {
+    filter: grayscale(1) invert(1) brightness(0.06);
+    transition: filter 2.8s ease;
+  }
+
+  /* Body background */
+  body.sameness-dominance,
+  body.sameness-dominance html {
+    background: #f5f4f0 !important;
+  }
+
+  /* Scanlines — remove in minimalist mode */
+  body.sameness-dominance::after {
+    display: none;
+  }
+
+  /* Panels — white card, whisper border, no glow */
+  body.sameness-dominance .panel {
+    background: rgba(255, 255, 255, 0.97) !important;
+    border-color: rgba(30, 45, 80, 0.1) !important;
+    box-shadow: 0 1px 3px rgba(30,45,80,0.06), 0 8px 32px rgba(30,45,80,0.04) !important;
+  }
+  body.sameness-dominance .panel::before {
+    background: linear-gradient(90deg, transparent, rgba(30,45,80,0.15), transparent) !important;
+  }
+
+  /* Progress bar — thin navy line, no glow */
+  body.sameness-dominance #progress-bar-container {
+    background: rgba(245, 244, 240, 0.96) !important;
+    border-bottom-color: rgba(30,45,80,0.08) !important;
+  }
+  body.sameness-dominance .progress-track {
+    background: rgba(30, 45, 80, 0.08) !important;
+  }
+  body.sameness-dominance .progress-fill {
+    background: #1e2d50 !important;
+    box-shadow: none !important;
+  }
+  body.sameness-dominance .progress-label,
+  body.sameness-dominance .progress-step {
+    color: #4a5a7a !important;
+  }
+
+  /* Balance meter — navy/slate tones, no glow */
+  body.sameness-dominance .balance-track {
+    background: rgba(30, 45, 80, 0.08) !important;
+  }
+  body.sameness-dominance .balance-freedom {
+    background: #3a4a6b !important;
+  }
+  body.sameness-dominance .balance-sameness {
+    background: #1e2d50 !important;
+  }
+
+  /* Buttons — outlined navy, no fill-sweep glow */
+  body.sameness-dominance .btn {
+    border-color: #1e2d50 !important;
+    color: #1e2d50 !important;
+    box-shadow: none !important;
+  }
+  body.sameness-dominance .btn::before {
+    background: #1e2d50 !important;
+  }
+  body.sameness-dominance .btn:hover {
+    color: #f5f4f0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Choice buttons — minimal outline */
+  body.sameness-dominance .choice-btn {
+    border-color: rgba(30, 45, 80, 0.2) !important;
+    background: rgba(30, 45, 80, 0.02) !important;
+    color: #1e2d50 !important;
+    box-shadow: none !important;
+  }
+  body.sameness-dominance .choice-btn:hover {
+    border-color: #1e2d50 !important;
+    color: #1e2d50 !important;
+    background: rgba(30, 45, 80, 0.06) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+  body.sameness-dominance .choice-btn.yes-btn:hover,
+  body.sameness-dominance .choice-btn.no-btn:hover {
+    border-color: #1e2d50 !important;
+    color: #1e2d50 !important;
+    background: rgba(30, 45, 80, 0.06) !important;
+    box-shadow: none !important;
+  }
+
+  /* Inputs — clean navy border */
+  body.sameness-dominance input[type=text],
+  body.sameness-dominance textarea {
+    background: rgba(30, 45, 80, 0.03) !important;
+    border-color: rgba(30, 45, 80, 0.2) !important;
+    color: #1e2d50 !important;
+  }
+  body.sameness-dominance input[type=text]:focus,
+  body.sameness-dominance textarea:focus {
+    border-color: #1e2d50 !important;
+    box-shadow: none !important;
+  }
+  body.sameness-dominance input::placeholder,
+  body.sameness-dominance textarea::placeholder {
+    color: #6a7a9a !important;
+  }
+
+  /* Headings */
+  body.sameness-dominance h1 { color: #1e2d50 !important; }
+  body.sameness-dominance h1 span { color: #1e2d50 !important; text-shadow: none !important; }
+  body.sameness-dominance h2 { color: #1e2d50 !important; }
+
+  /* Question text — hardcoded #fff in base CSS, must override explicitly */
+  body.sameness-dominance .question-text { color: #1e2d50 !important; }
+
+  /* Outcome type heading — hardcoded #fff in base CSS */
+  body.sameness-dominance .outcome-type { color: #1e2d50 !important; }
+
+  /* Laws title — hardcoded #fff in base CSS */
+  body.sameness-dominance .laws-title { color: #1e2d50 !important; }
+
+  /* Reveal name */
+  body.sameness-dominance .reveal-name { color: #1e2d50 !important; text-shadow: none !important; }
+
+  /* Strong text inside analysis and consequence boxes */
+  body.sameness-dominance .laws-analysis-text strong { color: #1e2d50 !important; }
+  body.sameness-dominance .consequence-text strong    { color: #1e2d50 !important; }
+
+  /* Logo/mono labels */
+  body.sameness-dominance .logo { color: #3a4a6b !important; opacity: 1; }
+  body.sameness-dominance .subtitle { color: #3a4a6b !important; }
+  body.sameness-dominance .question-number { color: #3a4a6b !important; }
+
+  /* Narrative and body text */
+  body.sameness-dominance .narrative { color: #1e2d50 !important; }
+  body.sameness-dominance .narrative strong { color: #1e2d50 !important; }
+  body.sameness-dominance .text-dim { color: #3a4a6b !important; }
+
+  /* Dilemma tag */
+  body.sameness-dominance .dilemma-tag {
+    color: #3a4a6b !important;
+    border-color: rgba(30,45,80,0.25) !important;
+  }
+  body.sameness-dominance .dilemma-scenario {
+    color: #1e2d50 !important;
+    border-left-color: rgba(30,45,80,0.15) !important;
+  }
+
+  /* Question subtitle — the subtext under each founding question */
+  body.sameness-dominance .question-subtext { color: #2c3a5a !important; }
+
+  /* Balance meter labels */
+  body.sameness-dominance .balance-label { color: #3a4a6b !important; }
+  body.sameness-dominance .balance-label span { color: #3a4a6b !important; }
+
+  /* Laws summary scan text */
+  body.sameness-dominance .laws-scan-text { color: #3a4a6b !important; }
+
+  /* Outcome description body text */
+  body.sameness-dominance .outcome-desc { color: #1e2d50 !important; }
+
+  /* Consequence text */
+  body.sameness-dominance .consequence-text { color: #1e2d50 !important; }
+  body.sameness-dominance .consequence-text strong { color: #1e2d50 !important; }
+
+  /* Escalation tags → navy tones */
+  body.sameness-dominance .escalation-policy     { color: #3a4a6b !important; border-color: rgba(58,74,107,0.3) !important; background: rgba(58,74,107,0.05) !important; }
+  body.sameness-dominance .escalation-consequence { color: #2c3a5a !important; border-color: rgba(44,58,90,0.3)  !important; background: rgba(44,58,90,0.05)  !important; }
+  body.sameness-dominance .escalation-breaking    { color: #1e2d50 !important; border-color: rgba(30,45,80,0.4)  !important; background: rgba(30,45,80,0.06)  !important; }
+  body.sameness-dominance .dilemma-escalation-tag { box-shadow: none !important; }
+
+  /* Consequence box */
+  body.sameness-dominance .consequence-box {
+    border-color: rgba(30,45,80,0.15) !important;
+    border-left-color: #1e2d50 !important;
+    background: rgba(30,45,80,0.03) !important;
+  }
+  body.sameness-dominance .consequence-log-line { color: #3a4a6b !important; }
+  body.sameness-dominance .consequence-text { color: #2c3a5a !important; }
+  body.sameness-dominance .consequence-text strong { color: #1e2d50 !important; }
+
+  /* Law cards — clean outlined cards */
+  body.sameness-dominance .law-card { background: rgba(30,45,80,0.02) !important; border-color: rgba(30,45,80,0.12) !important; }
+  body.sameness-dominance .law-card.choice-yes  { border-color: rgba(30,45,80,0.15) !important; background: rgba(30,45,80,0.03) !important; }
+  body.sameness-dominance .law-card.choice-yes::after  { background: #3a4a6b !important; box-shadow: none !important; }
+  body.sameness-dominance .law-card.choice-no   { border-color: rgba(30,45,80,0.1) !important;  background: rgba(30,45,80,0.02) !important; }
+  body.sameness-dominance .law-card.choice-no::after   { background: #6a7a9a !important; box-shadow: none !important; }
+  body.sameness-dominance .law-card.choice-dep::after  { background: #c0c8d8 !important; }
+  body.sameness-dominance .law-card-number  { color: #6a7a9a !important; }
+  body.sameness-dominance .law-card-question { color: #1e2d50 !important; }
+  body.sameness-dominance .verdict-yes { color: #2c3a5a !important; background: rgba(30,45,80,0.06) !important; border-color: rgba(30,45,80,0.2) !important; }
+  body.sameness-dominance .verdict-no  { color: #4a5a7a !important; background: rgba(30,45,80,0.04) !important; border-color: rgba(30,45,80,0.14) !important; }
+  body.sameness-dominance .verdict-dep { color: #6a7a9a !important; background: rgba(30,45,80,0.03) !important; border-color: rgba(30,45,80,0.1)  !important; }
+
+  /* Laws summary screen */
+  body.sameness-dominance .laws-title { color: #1e2d50 !important; }
+  body.sameness-dominance .laws-subtext { color: #4a5a7a !important; }
+  body.sameness-dominance .laws-scan-text { color: #6a7a9a !important; }
+  body.sameness-dominance .laws-scan-dot { background: #6a7a9a !important; box-shadow: none !important; animation: none !important; }
+  body.sameness-dominance .laws-analysis { background: rgba(30,45,80,0.03) !important; border-color: rgba(30,45,80,0.1) !important; }
+  body.sameness-dominance .laws-analysis::before { background: linear-gradient(90deg, transparent, rgba(30,45,80,0.15), transparent) !important; }
+  body.sameness-dominance .laws-analysis-label { color: #4a5a7a !important; }
+  body.sameness-dominance .laws-analysis-text { color: #2c3a5a !important; }
+  body.sameness-dominance .laws-analysis-text strong { color: #1e2d50 !important; }
+
+  /* Score cards on reveal screen */
+  body.sameness-dominance .score-card { background: rgba(30,45,80,0.03) !important; border-color: rgba(30,45,80,0.12) !important; }
+  body.sameness-dominance .freedom-card  { border-color: rgba(58,74,107,0.2) !important; }
+  body.sameness-dominance .sameness-card { border-color: rgba(30,45,80,0.2) !important; }
+  body.sameness-dominance .score-card-label { color: #6a7a9a !important; }
+  body.sameness-dominance .freedom-card  .score-card-value { color: #3a4a6b !important; text-shadow: none !important; }
+  body.sameness-dominance .sameness-card .score-card-value { color: #1e2d50 !important; text-shadow: none !important; }
+  body.sameness-dominance .freedom-card  .score-card-fill  { background: #3a4a6b !important; }
+  body.sameness-dominance .sameness-card .score-card-fill  { background: #1e2d50 !important; }
+
+  /* Outcome box */
+  body.sameness-dominance .outcome-box { background: rgba(30,45,80,0.03) !important; border-color: rgba(30,45,80,0.1) !important; }
+  body.sameness-dominance .outcome-box::before { background: linear-gradient(90deg, transparent, rgba(30,45,80,0.2), transparent) !important; }
+  body.sameness-dominance .outcome-title { color: #4a5a7a !important; }
+  body.sameness-dominance .outcome-type  { color: #1e2d50 !important; }
+  body.sameness-dominance .outcome-desc  { color: #2c3a5a !important; }
+
+  /* Dividers */
+  body.sameness-dominance .divider { background: linear-gradient(90deg, transparent, rgba(30,45,80,0.12), transparent) !important; }
+
+  /* Teacher mode */
+  body.sameness-dominance .teacher-header { background: rgba(30,45,80,0.05) !important; border-color: rgba(30,45,80,0.2) !important; color: #1e2d50 !important; }
+  body.sameness-dominance .teacher-stat  { background: rgba(30,45,80,0.03) !important; border-color: rgba(30,45,80,0.1) !important; }
+  body.sameness-dominance .teacher-stat-num { color: #1e2d50 !important; text-shadow: none !important; }
+  body.sameness-dominance .teacher-stat-lbl { color: #4a5a7a !important; }
+  body.sameness-dominance .student-table th { color: #3a4a6b !important; border-bottom-color: rgba(30,45,80,0.12) !important; }
+  body.sameness-dominance .student-table td { border-bottom-color: rgba(30,45,80,0.06) !important; color: #2c3a5a !important; }
+
+  /* Glitch animation — disabled in minimalist mode */
+  body.sameness-dominance .glitch { animation: none !important; color: #1e2d50 !important; }
+
+  /* ── FREEDOM GLITCH — chaos mode ──────────────────────────
+     Applied when freedomScore exceeds 65% of the total score.
+     The interface begins to glitch: buttons gain layered echo
+     outlines, text splits with RGB offset, panels jitter,
+     and elements flicker. The design itself becomes unstable —
+     a direct visual consequence of unrestricted freedom.
+  ─────────────────────────────────────────────────────────── */
+
+  /* ── Glitch keyframes ── */
+
+  /* Button border echo pulse — multiple offset outlines appear */
+  @keyframes glitch-border-echo {
+    0%   { box-shadow: 3px 0 0 0 rgba(255,30,30,0.7), -3px 0 0 0 rgba(0,200,255,0.7), 0 0 0 2px rgba(255,30,30,0.25), 0 0 0 4px rgba(255,30,30,0.14), 0 0 0 7px rgba(255,30,30,0.07); }
+    20%  { box-shadow: -4px 1px 0 0 rgba(255,30,30,0.8), 4px -1px 0 0 rgba(0,200,255,0.8), 0 0 0 3px rgba(255,30,30,0.22), 0 0 0 6px rgba(255,30,30,0.12), 0 0 0 9px rgba(255,30,30,0.06); }
+    40%  { box-shadow: 2px -2px 0 0 rgba(255,30,30,0.6), -2px 2px 0 0 rgba(0,200,255,0.6), 0 0 0 2px rgba(255,30,30,0.2),  0 0 0 5px rgba(255,30,30,0.1),  0 0 0 8px rgba(255,30,30,0.05); }
+    60%  { box-shadow: -5px 0 0 0 rgba(255,30,30,0.9), 5px 0 0 0 rgba(0,200,255,0.5),  0 0 0 4px rgba(255,30,30,0.28), 0 0 0 7px rgba(255,30,30,0.14), 0 0 0 11px rgba(255,30,30,0.07); }
+    80%  { box-shadow: 3px 2px 0 0 rgba(255,30,30,0.7), -3px -2px 0 0 rgba(0,200,255,0.7), 0 0 0 2px rgba(255,30,30,0.2), 0 0 0 4px rgba(255,30,30,0.1), 0 0 0 6px rgba(255,30,30,0.05); }
+    100% { box-shadow: 3px 0 0 0 rgba(255,30,30,0.7), -3px 0 0 0 rgba(0,200,255,0.7), 0 0 0 2px rgba(255,30,30,0.25), 0 0 0 4px rgba(255,30,30,0.14), 0 0 0 7px rgba(255,30,30,0.07); }
+  }
+
+  /* Text RGB chromatic split — red/cyan channel offset */
+  @keyframes glitch-text-split {
+    0%,100% { text-shadow: 2px 0 rgba(255,30,30,0.8), -2px 0 rgba(0,200,255,0.8); }
+    25%     { text-shadow: -3px 1px rgba(255,30,30,0.9), 3px -1px rgba(0,200,255,0.6); }
+    50%     { text-shadow: 1px -2px rgba(255,30,30,0.7), -1px 2px rgba(0,200,255,0.9); }
+    75%     { text-shadow: -2px -1px rgba(255,30,30,1.0), 4px 1px rgba(0,200,255,0.5); }
+  }
+
+  /* Panel jitter — subtle horizontal shake */
+  @keyframes glitch-jitter {
+    0%,100% { transform: translateX(0); }
+    10%     { transform: translateX(-2px); }
+    20%     { transform: translateX(3px); }
+    30%     { transform: translateX(-1px); }
+    40%     { transform: translateX(2px); }
+    50%     { transform: translateX(0); }
+    70%     { transform: translateX(-3px); }
+    80%     { transform: translateX(1px); }
+    90%     { transform: translateX(-1px); }
+  }
+
+  /* Scanline interference sweep */
+  @keyframes glitch-scanline {
+    0%   { transform: translateY(-100%); opacity: 0.06; }
+    100% { transform: translateY(200%);  opacity: 0.06; }
+  }
+
+  /* Border colour flicker between red and cyan */
+  @keyframes glitch-border-flicker {
+    0%,100% { border-color: rgba(255, 30,  30,  0.8); }
+    33%     { border-color: rgba(0,  200, 255, 0.8); }
+    66%     { border-color: rgba(255, 200,  0,  0.6); }
+  }
+
+  /* Opacity stutter */
+  @keyframes glitch-flicker {
+    0%,100% { opacity: 1; }
+    5%      { opacity: 0.85; }
+    10%     { opacity: 1; }
+    45%     { opacity: 0.9; }
+    50%     { opacity: 1; }
+    80%     { opacity: 0.95; }
+    85%     { opacity: 1; }
+  }
+
+  /* ── Global enter transition ── */
+  body.freedom-glitch {
+    transition: background-color 1.2s ease;
+  }
+
+  /* ── Buttons (.btn and .choice-btn) — the primary glitch elements ── */
+  body.freedom-glitch .btn,
+  body.freedom-glitch .choice-btn {
+    animation:
+      glitch-border-echo  1.8s ease-in-out infinite,
+      glitch-flicker      3.2s step-end infinite;
+    border-color: rgba(255, 30, 30, 0.8) !important;
+    color: #ff1e1e !important;
+    position: relative;
+    overflow: visible !important; /* let echoes bleed outside bounds */
+  }
+
+  /* RGB text split on button labels */
+  body.freedom-glitch .btn,
+  body.freedom-glitch .choice-btn {
+    animation:
+      glitch-border-echo  1.8s ease-in-out infinite,
+      glitch-text-split   2.4s ease-in-out infinite,
+      glitch-flicker      3.2s step-end infinite;
+  }
+
+  /* Pseudo-element — sweeping scanline interference across button */
+  body.freedom-glitch .btn::after,
+  body.freedom-glitch .choice-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      transparent 0%,
+      rgba(255, 30, 30, 0.08) 50%,
+      transparent 100%
+    );
+    height: 40%;
+    pointer-events: none;
+    animation: glitch-scanline 1.6s linear infinite;
+    z-index: 2;
+  }
+
+  /* Stagger each button so they don't all glitch in sync */
+  body.freedom-glitch .choice-btn:nth-child(1) { animation-delay: 0s,    0s,    0s; }
+  body.freedom-glitch .choice-btn:nth-child(2) { animation-delay: 0.4s,  0.3s,  0.6s; }
+  body.freedom-glitch .choice-btn:nth-child(3) { animation-delay: 0.8s,  0.7s,  1.1s; }
+
+  /* ── Panels — intermittent jitter ── */
+  body.freedom-glitch .panel {
+    animation: glitch-jitter 6s step-end infinite;
+    border-color: rgba(255, 30, 30, 0.25) !important;
+  }
+
+  /* Panel top line → red */
+  body.freedom-glitch .panel::before {
+    background: linear-gradient(90deg, transparent, rgba(255,30,30,0.8), transparent) !important;
+  }
+
+  /* ── Headings — persistent RGB split ── */
+  body.freedom-glitch h1,
+  body.freedom-glitch .question-text,
+  body.freedom-glitch .dilemma-scenario,
+  body.freedom-glitch .outcome-type {
+    animation: glitch-text-split 3s ease-in-out infinite;
+  }
+
+  body.freedom-glitch h1 span {
+    color: #ff1e1e !important;
+    text-shadow: 2px 0 rgba(0,200,255,0.8), -2px 0 rgba(255,30,30,0.8) !important;
+  }
+
+  /* ── Accent colour → red ── */
+  body.freedom-glitch {
+    --accent:  #ff1e1e;
+    --accent2: #ff6b00;
+    --accent3: #cc0000;
+    --glow:    0 0 18px rgba(255,30,30,0.45), 0 0 60px rgba(255,30,30,0.12);
+    --border:  rgba(255, 30, 30, 0.25);
+  }
+
+  /* ── Progress bar fill → red glitch gradient ── */
+  body.freedom-glitch .progress-fill {
+    background: linear-gradient(90deg, #cc0000, #ff1e1e);
+    animation: glitch-border-flicker 1.2s step-end infinite;
+  }
+
+  /* ── Balance meter freedom side → red ── */
+  body.freedom-glitch .balance-freedom {
+    background: linear-gradient(90deg, #cc0000, #ff3333) !important;
+  }
+
+  /* ── Consequence box — red left border flickers ── */
+  body.freedom-glitch .consequence-box {
+    border-left-color: #ff1e1e;
+    animation: glitch-border-flicker 0.9s step-end infinite;
+  }
+
+  /* ── Stars — red tint ── */
+  body.freedom-glitch #starCanvas {
+    filter: sepia(0.4) hue-rotate(-30deg) saturate(2) brightness(0.7);
+    transition: filter 1.5s ease;
+  }
+
+  /* ── Dilemma escalation tags — red glitch style ── */
+  body.freedom-glitch .escalation-breaking {
+    animation: glitch-border-flicker 0.8s step-end infinite,
+               glitch-flicker        2s   step-end infinite;
+  }
+
+  /* ── Law cards — red/cyan border echo ── */
+  body.freedom-glitch .law-card.choice-yes::after { background: #ff1e1e; }
+  body.freedom-glitch .law-card.choice-no::after  { background: #ff6b00; }
+
+  /* ── Input fields — red border ── */
+  body.freedom-glitch input[type=text]:focus,
+  body.freedom-glitch textarea:focus {
+    border-color: #ff1e1e;
+    box-shadow: 0 0 18px rgba(255,30,30,0.45);
+  }
 
   html, body {
     width: 100%; min-height: 100vh;
@@ -303,7 +770,7 @@
     color: #fff; margin-bottom: 12px;
   }
   .question-subtext {
-    font-size: 13px; font-weight: 300; color: var(--text-dim);
+    font-size: 17px; font-weight: 300; color: var(--text-dim);
     margin-bottom: 28px; line-height: 1.6;
   }
 
@@ -618,6 +1085,67 @@
   }
   .laws-analysis-text strong { color: #fff; font-weight: 700; }
 
+
+  /* ── CONSEQUENCE SYSTEM ── */
+
+  /* Escalation level tag next to crisis counter */
+  .dilemma-escalation-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+    margin-left: 10px;
+    opacity: 0;
+    transition: opacity 0.4s ease 0.2s;
+  }
+  .dilemma-escalation-tag.visible { opacity: 1; }
+  .escalation-policy   { color: #7bb8ff; border: 1px solid rgba(123,184,255,0.3); background: rgba(123,184,255,0.06); }
+  .escalation-consequence { color: #ffb347; border: 1px solid rgba(255,179,71,0.3); background: rgba(255,179,71,0.06); }
+  .escalation-breaking { color: var(--accent2); border: 1px solid rgba(255,75,110,0.4); background: rgba(255,75,110,0.08); }
+
+  /* Consequence box — hidden until choice is made */
+  .consequence-box {
+    margin-top: 24px;
+    border: 1px solid rgba(0,200,255,0.15);
+    border-left: 3px solid var(--accent2);
+    border-radius: 3px;
+    padding: 16px 20px;
+    background: rgba(0,0,0,0.35);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  }
+  .consequence-box.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .consequence-log-line {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 10px;
+    animation: logBlink 1s step-end 3;
+  }
+  @keyframes logBlink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+  .consequence-text {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text);
+    font-style: italic;
+  }
+  .consequence-text strong { color: #fff; font-style: normal; font-weight: 600; }
+
   @media (max-width: 540px) {
     .panel { padding: 28px 22px; }
     .score-grid { grid-template-columns: 1fr; }
@@ -732,9 +1260,17 @@
   <div class="screen" id="screen-dilemma">
     <div class="panel">
       <div class="dilemma-tag" id="dilemma-counter">// Crisis Event 1 of 3</div>
+      <div class="dilemma-escalation-tag" id="dilemma-escalation-tag"></div>
       <div class="question-text" id="dilemma-title"></div>
       <div class="dilemma-scenario" id="dilemma-scenario"></div>
       <div class="btn-group" id="dilemma-choices"></div>
+
+      <!-- Consequence message — shown after choice, before advancing -->
+      <div class="consequence-box" id="consequence-box">
+        <div class="consequence-log-line">→ Outcome Recorded</div>
+        <div class="consequence-text" id="consequence-text"></div>
+      </div>
+
       <div class="balance-container">
         <div class="balance-label">
           <span>Freedom ↑</span>
@@ -1116,63 +1652,6 @@ function selectFoundingQuestions(pool, count) {
 // Populated fresh at the start of each game session
 let selectedFoundingQuestions = [];
 
-const ALL_DILEMMAS = [
-  {
-    title: "The Pain Elimination",
-    scenario: (name) => `Scientists in your society have developed a medication that permanently eliminates emotional pain — grief, heartbreak, loneliness, fear. As a side effect, it also dulls intense joy and deep love. ${name}, your advisors recommend making it compulsory for all citizens over age 12. Those who refuse will be considered a threat to societal stability.`,
-    choices: [
-      { text: "Make it compulsory", freedom: -14, sameness: +16 },
-      { text: "Make it optional", freedom: +10, sameness: -6 },
-      { text: "Ban it entirely", freedom: +6, sameness: -4 }
-    ]
-  },
-  {
-    title: "The Prediction Protocol",
-    scenario: (name) => `Crime has become a serious problem. A new AI system can predict — with 90% accuracy — who will commit a violent crime before they act. Your advisors recommend pre-emptive detention. ${name}, 10 in every 100 people detained will be completely innocent. Your prisons will be full of people who have done nothing wrong — yet.`,
-    choices: [
-      { text: "Implement the system", freedom: -14, sameness: +14 },
-      { text: "Trial it carefully", freedom: -4, sameness: +6 },
-      { text: "Reject it entirely", freedom: +14, sameness: -10 }
-    ]
-  },
-  {
-    title: "The Memory Keeper",
-    scenario: (name) => `Your society has voted to erase all collective memory of suffering — war, famine, genocide — from every citizen's mind. This will create peace, but wisdom will be lost. One person must be chosen to carry all these memories alone — forever — so the knowledge isn't destroyed. ${name}, no one has volunteered.`,
-    choices: [
-      { text: "Force someone to carry it", freedom: -12, sameness: +10 },
-      { text: "Call for a volunteer openly", freedom: +8, sameness: -4 },
-      { text: "Abandon the plan — keep history", freedom: +12, sameness: -10 }
-    ]
-  },
-  {
-    title: "The Dissenters",
-    scenario: (name) => `A small group of citizens — artists, philosophers, and writers — are publicly questioning your society's values. They are not violent. They simply ask uncomfortable questions and publish ideas that make others doubt the system. ${name}, your security advisors warn that dissent, left unchecked, will spread.`,
-    choices: [
-      { text: "Silence and relocate them", freedom: -14, sameness: +14 },
-      { text: "Open a public debate", freedom: +12, sameness: -8 },
-      { text: "Ignore them", freedom: +6, sameness: -2 }
-    ]
-  },
-  {
-    title: "The Elder Protocol",
-    scenario: (name) => `Resources in your society are finite. Your advisors propose a policy: once citizens reach a certain age and can no longer contribute economically, they are peacefully and painlessly 'released' — a term your society uses for a procedure most citizens do not fully understand. ${name}, this would free up significant resources for the young.`,
-    choices: [
-      { text: "Implement the protocol", freedom: -14, sameness: +16 },
-      { text: "Reject it — all lives have value", freedom: +14, sameness: -10 },
-      { text: "Let citizens vote on it", freedom: +8, sameness: -4 }
-    ]
-  },
-  {
-    title: "The Education Filter",
-    scenario: (name) => `Your ministry of education proposes removing certain books, films, and artworks from schools — ones that portray suffering, moral complexity, or rebellion against authority. They argue these works create unhappy, unstable citizens. ${name}, some of your advisors argue that removing them creates something far more dangerous: a generation that cannot think.`,
-    choices: [
-      { text: "Remove the challenging material", freedom: -12, sameness: +14 },
-      { text: "Keep all material available", freedom: +14, sameness: -10 },
-      { text: "Let teachers decide case-by-case", freedom: +6, sameness: +2 }
-    ]
-  }
-];
-
 // ═══════════════════════════════════════════════════════
 //  OUTCOME PROFILES
 // ═══════════════════════════════════════════════════════
@@ -1229,10 +1708,10 @@ function showScreen(id) {
 
 // ═══════════════════════════════════════════════════════
 //  PROGRESS BAR
-//  Steps: 1=name, 2-9=founding Q1-8, 10=transition,
-//         11-13=dilemma 1-3, 14=reveal (100%)
+//  Steps: 1=intro, 2-6=founding x5, 7=laws, 8=transition,
+//         9-11=dilemmas x3 (11 = 100%)
 // ═══════════════════════════════════════════════════════
-const TOTAL_STEPS = 13; // steps 1–13, reveal = step 13 = 100%
+const TOTAL_STEPS = 11;
 
 function setProgress(step, label) {
   const pct = Math.round((step / TOTAL_STEPS) * 100);
@@ -1258,6 +1737,45 @@ function updateBalanceMeters() {
     if (bf) bf.style.width = fPct + '%';
     if (bs) bs.style.width = sPct + '%';
   });
+  // Check whether sameness now dominates — triggers monochrome mode if so
+  checkSamenessDominance();
+  // Check whether freedom now dominates — triggers glitch mode if so
+  checkFreedomGlitch();
+}
+
+// ═══════════════════════════════════════════════════════
+//  SAMENESS DOMINANCE — MONOCHROME MODE
+//  When samenessScore exceeds 65% of the total score,
+//  the game's visual design drains of colour — becoming
+//  monochrome. This is a direct consequence of the
+//  player's choices, felt as a design shift.
+//  The class is applied to <body> so CSS variables and
+//  all colour overrides cascade globally.
+// ═══════════════════════════════════════════════════════
+function checkSamenessDominance() {
+  const total = freedomScore + samenessScore || 1;
+  const samenessRatio = samenessScore / total;
+  const isDominant = samenessRatio > 0.65;
+  document.body.classList.toggle('sameness-dominance', isDominant);
+}
+
+// ═══════════════════════════════════════════════════════
+//  FREEDOM GLITCH — CHAOS MODE
+//  When freedomScore exceeds 65% of the total score,
+//  the interface begins to visually glitch: buttons
+//  gain layered echo outlines, text splits with RGB
+//  chromatic offset, panels jitter. The design itself
+//  becomes unstable — a consequence of unchecked freedom.
+//  The class is applied to <body> so all glitch CSS
+//  animations cascade globally.
+// ═══════════════════════════════════════════════════════
+function checkFreedomGlitch() {
+  const total = freedomScore + samenessScore || 1;
+  const freedomRatio = freedomScore / total;
+  const isGlitching = freedomRatio > 0.65;
+  document.body.classList.toggle('freedom-glitch', isGlitching);
+  // The two modes are mutually exclusive — one removes the other
+  if (isGlitching) document.body.classList.remove('sameness-dominance');
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1275,9 +1793,11 @@ document.getElementById('begin-btn').addEventListener('click', () => {
   playClick();
   startFounding();
 });
+
 document.getElementById('name-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('begin-btn').click();
 });
+
 // Show step 1 on the intro screen (not in teacher mode)
 if (new URLSearchParams(window.location.search).get('teacher') !== 'true') {
   setProgress(1, 'Architect Registration');
@@ -1291,15 +1811,18 @@ function startFounding() {
   foundingAnswers = [];
   freedomScore = 50;
   samenessScore = 50;
-  // Select 8 questions fresh for this playthrough using weighted randomisation
-  selectedFoundingQuestions = selectFoundingQuestions(FOUNDING_POOL, 8);
+  // Scores reset to 50/50 — ensure monochrome mode and glitch mode are both cleared
+  document.body.classList.remove('sameness-dominance');
+  document.body.classList.remove('freedom-glitch');
+  // Select 5 questions fresh for this playthrough using weighted randomisation
+  selectedFoundingQuestions = selectFoundingQuestions(FOUNDING_POOL, 5);
   showScreen('founding');
   loadFoundingQuestion();
 }
 
 function loadFoundingQuestion() {
-  // Steps 2-9 for founding questions 0-7
-  setProgress(foundingIndex + 2, `Founding Decision ${foundingIndex + 1} / 8`);
+  // Steps 2–6 for founding questions 0–4
+  setProgress(foundingIndex + 2, `Founding Decision ${foundingIndex + 1} / 5`);
   updateBalanceMeters();
   const q = selectedFoundingQuestions[foundingIndex];
   document.getElementById('founding-counter').textContent =
@@ -1326,7 +1849,7 @@ function applyFoundingAnswer(type) {
   }
 }
 
-['found-yes','found-depends','found-no'].forEach((id, i) => {
+['found-yes', 'found-depends', 'found-no'].forEach((id, i) => {
   const types = ['yes', 'dep', 'no'];
   document.getElementById(id).addEventListener('click', () => applyFoundingAnswer(types[i]));
 });
@@ -1346,13 +1869,12 @@ const VERDICT_CONFIG = {
 function getSystemAnalysis(name) {
   const total = freedomScore + samenessScore || 1;
   const ratio = freedomScore / total;
-  const yesCt = foundingAnswers.filter(a => a.answer === 'yes').length;
   const noCt  = foundingAnswers.filter(a => a.answer === 'no').length;
 
   if (ratio > 0.65) return `<strong>${name}</strong>, your laws grant sweeping individual freedoms. Your citizens may choose, dissent, and leave. This is bold — but systems built on freedom must also tolerate the chaos that comes with it.`;
   if (ratio > 0.52) return `<strong>${name}</strong>, your founding laws lean toward freedom while preserving some structure. A delicate balance — but balance is fragile, and crisis has a way of forcing a choice.`;
   if (ratio > 0.38) return `<strong>${name}</strong>, your society prioritises structure over personal freedom. Citizens are protected — from risk, from disorder, and increasingly from themselves. Stability has a cost.`;
-  if (noCt >= 6)    return `<strong>${name}</strong>, you have built a system of control. Almost every freedom has been restricted. Your citizens will be safe, equal — and entirely subject to the will of the state. Sound familiar?`;
+  if (noCt >= 4)    return `<strong>${name}</strong>, you have built a system of control. Almost every freedom has been restricted. Your citizens will be safe, equal — and entirely subject to the will of the state. Sound familiar?`;
   return `<strong>${name}</strong>, your laws suggest a highly managed society. Individual choice is limited. The state decides. Whether that makes your world better — or merely more orderly — remains to be seen.`;
 }
 
@@ -1361,11 +1883,9 @@ function animateLawCards(cards, analysisEl, scanRow) {
   cards.forEach((card, i) => {
     setTimeout(() => {
       card.classList.add('revealed');
-      // Hide scan row once first card appears
       if (i === 0) scanRow.style.opacity = '0.3';
     }, i * 140);
   });
-  // Reveal analysis box after all cards are shown
   setTimeout(() => {
     analysisEl.classList.add('revealed');
   }, cards.length * 140 + 200);
@@ -1373,14 +1893,11 @@ function animateLawCards(cards, analysisEl, scanRow) {
 
 // Main function: build and show the founding laws screen
 function showFoundingSummary() {
-  // Progress: treat laws screen as sitting between founding (step 9) and transition (step 10)
-  setProgress(9, 'Laws Compiled');
+  setProgress(7, 'Laws Compiled');
 
-  // Personalised subtext
   document.getElementById('laws-subtext').textContent =
     `${playerName}, these are the rules your society will live by.`;
 
-  // Scanning text cycles through phrases while cards load
   const scanPhrases = [
     'Analysing societal framework…',
     'Compiling constitutional data…',
@@ -1394,13 +1911,11 @@ function showFoundingSummary() {
     scanTextEl.textContent = scanPhrases[phraseIndex];
   }, 900);
 
-  // Build law cards
   const grid = document.getElementById('laws-grid');
   grid.innerHTML = '';
 
   foundingAnswers.forEach((entry, i) => {
     const cfg = VERDICT_CONFIG[entry.answer] || VERDICT_CONFIG.dep;
-    // Use shortLabel stored on the answer (set in applyFoundingAnswer), fallback to full question
     const label = entry.shortLabel || entry.question;
 
     const card = document.createElement('div');
@@ -1413,20 +1928,16 @@ function showFoundingSummary() {
     grid.appendChild(card);
   });
 
-  // Set system analysis text
   document.getElementById('laws-analysis-text').innerHTML = getSystemAnalysis(playerName);
 
-  // Show the screen, then start animations
   showScreen('laws');
 
-  const cards     = Array.from(grid.querySelectorAll('.law-card'));
+  const cards      = Array.from(grid.querySelectorAll('.law-card'));
   const analysisEl = document.getElementById('laws-analysis');
-  const scanRow   = document.getElementById('laws-scan-row');
+  const scanRow    = document.getElementById('laws-scan-row');
 
-  // Reset analysis opacity before animating in
   analysisEl.classList.remove('revealed');
 
-  // Short delay so the screen fade-in completes first
   setTimeout(() => {
     clearInterval(scanInterval);
     scanTextEl.textContent = 'Framework compiled.';
@@ -1444,38 +1955,515 @@ document.getElementById('laws-proceed-btn').addEventListener('click', () => {
 //  TRANSITION
 // ═══════════════════════════════════════════════════════
 function showTransition() {
-  setProgress(10, 'Phase 2 Unlocking');
+  setProgress(8, 'Phase 2 Unlocking');
   document.getElementById('transition-text').textContent =
     `${playerName}, your founding laws are written. Now reality arrives.`;
   showScreen('transition');
 }
+
 document.getElementById('transition-btn').addEventListener('click', () => {
   playClick();
   startDilemmas();
 });
 
+
 // ═══════════════════════════════════════════════════════
-//  DILEMMA PHASE
+//  DILEMMA STATE
+//  previousChoices — plain-text record for teacher view
+//  flags           — boolean triggers read by later scenarios
 // ═══════════════════════════════════════════════════════
+let dilemmaState = {
+  previousChoices: [],
+  flags: {}
+};
+
+// ═══════════════════════════════════════════════════════
+//  DILEMMA CHAINS  (4 chains × 3 linked dilemmas)
+//
+//  Chain selection (startDilemmas):
+//    ratio > 0.65  → "freedom"  (Freedom → Chaos → Reaction)
+//    ratio < 0.35  → "control"  (Control Through Safety)
+//    balanced      → "truth" or "equality" (random)
+//
+//  Each dilemma:
+//    title           — headline shown in the UI
+//    escalation      — 'policy' | 'consequence' | 'breaking'
+//    escalationLabel — text shown in the coloured tag
+//    scenario(name, state) — returns dynamic narrative string
+//    choices[]       — { text, effect{freedom,sameness},
+//                        flag (optional), consequence (ominous 1–2 sentences) }
+// ═══════════════════════════════════════════════════════
+const DILEMMA_CHAINS = [
+
+  // ──────────────────────────────────────────────────────
+  //  CHAIN 1 — Control Through Safety
+  //  Arc: pain elimination → passive compliance → hollow society
+  // ──────────────────────────────────────────────────────
+  {
+    id: 'control',
+    dilemmas: [
+      {
+        title: 'The Pain Elimination',
+        escalation: 'policy',
+        escalationLabel: 'Policy Decision',
+        scenario: (name, state) =>
+          `${name}, your scientists offer a way to eliminate emotional pain entirely. No grief. No fear. No suffering. But also — less joy. Less love. Less everything that makes a human moment feel real. Your advisors call it stability. Your citizens call it nothing at all, because they have not yet been asked.`,
+        choices: [
+          {
+            text: 'Make it compulsory for all citizens',
+            effect: { freedom: -14, sameness: +16 },
+            flag: 'pain_removed',
+            consequence: 'Your society grows quieter. Conflict falls. So does spontaneous laughter. Citizens describe feeling "well" — a word that has begun to replace all others.'
+          },
+          {
+            text: 'Make it optional',
+            effect: { freedom: +6, sameness: -4 },
+            consequence: 'Most citizens choose calm over feeling. Those who decline begin to seem unusual. Noticeable. Different. No policy enforces this — none is needed.'
+          },
+          {
+            text: 'Ban it entirely',
+            effect: { freedom: +10, sameness: -6 },
+            consequence: 'Your citizens keep the full weight of being human. Your advisors file formal objections. Unrest, they report, is measurably higher. So is music. So is protest.'
+          }
+        ]
+      },
+      {
+        title: 'The Compliance Drift',
+        escalation: 'consequence',
+        escalationLabel: 'Unintended Consequences',
+        scenario: (name, state) => {
+          if (state.flags.pain_removed)
+            return `${name}, without pain, your citizens no longer question anything. Productivity is high. Creativity is not. Innovation is collapsing. Your advisors, who cannot feel alarm anymore, suggest behavioural reinforcement systems to compensate.`;
+          return `${name}, your citizens still feel deeply — and with that comes unrest. Some demand protection from emotional harm. Your advisors argue that stability requires consistency. They are waiting for your instruction.`;
+        },
+        choices: [
+          {
+            text: 'Introduce behaviour conditioning programmes',
+            effect: { freedom: -12, sameness: +14 },
+            flag: 'conditioned',
+            consequence: 'Citizens are reshaped, quietly and efficiently. Compliance improves. So does the silence between people who used to disagree.'
+          },
+          {
+            text: 'Invest in emotional resilience education',
+            effect: { freedom: +8, sameness: -4 },
+            consequence: 'Citizens begin learning to carry difficulty rather than avoid it. Some find it unbearable. Others find it clarifying. The difference between those two groups begins to matter.'
+          },
+          {
+            text: 'Take no action — observe',
+            effect: { freedom: +2, sameness: 0 },
+            consequence: 'Your society continues without intervention. The drift continues too. What was unintended becomes, quietly, the norm.'
+          }
+        ]
+      },
+      {
+        title: 'The Hollow Society',
+        escalation: 'breaking',
+        escalationLabel: 'Point of No Return',
+        scenario: (name, state) => {
+          if (state.flags.pain_removed && state.flags.conditioned)
+            return `${name}, your society is peaceful. Perfectly stable. And completely empty. Citizens comply. They do not feel. Birth rates are falling — not from policy, but from a quiet collective conclusion that there is nothing worth continuing for. Your advisors present this as a resource efficiency problem.`;
+          return `${name}, your society stands at a crossroads. The decisions you have made have led here: to a choice between stability and meaning. You cannot fully have both. Your advisors are waiting.`;
+        },
+        choices: [
+          {
+            text: 'Maintain control — stability is the only value',
+            effect: { freedom: -14, sameness: +16 },
+            consequence: 'Order holds. The society continues. Citizens live long, productive, unremarkable lives. They do not suffer. They also do not notice that they have stopped hoping.'
+          },
+          {
+            text: 'Reintroduce emotional freedom — reverse course',
+            effect: { freedom: +14, sameness: -10 },
+            consequence: 'Your citizens feel again. The re-emergence of grief, joy, and rage is overwhelming for a society unprepared for it. Some citizens do not survive the adjustment. Others say, quietly, that it was worth it.'
+          },
+          {
+            text: 'Gradual reform — restore feeling slowly',
+            effect: { freedom: +6, sameness: -2 },
+            consequence: 'Change comes carefully. Citizens begin to report something unfamiliar — not happiness, exactly, but its preconditions. Your advisors note it as an acceptable outcome. It is more than that.'
+          }
+        ]
+      }
+    ]
+  },
+
+  // ──────────────────────────────────────────────────────
+  //  CHAIN 2 — Freedom → Chaos → Reaction
+  //  Arc: total freedom → fracture → authoritarian backlash
+  // ──────────────────────────────────────────────────────
+  {
+    id: 'freedom',
+    dilemmas: [
+      {
+        title: 'Total Freedom Policy',
+        escalation: 'policy',
+        escalationLabel: 'Policy Decision',
+        scenario: (name, state) =>
+          `${name}, you have the opportunity to remove nearly all restrictions — on movement, expression, accumulation, belief. Your citizens would be free. Completely. At first, your advisors report, it is euphoric.`,
+        choices: [
+          {
+            text: 'Let freedom reign — remove all limits',
+            effect: { freedom: +14, sameness: -10 },
+            flag: 'total_freedom',
+            consequence: 'Your population is exhilarated. So is inequality. The strongest citizens begin accumulating. The least protected begin noticing. Your advisors call the first month a success.'
+          },
+          {
+            text: 'Moderate freedom — rights with responsibilities',
+            effect: { freedom: +8, sameness: -4 },
+            consequence: 'A measured freedom takes hold. Citizens are freer than before. The question of how much freer is already being debated by the people who benefited most from the previous limits.'
+          },
+          {
+            text: 'Reconsider — limits exist for reasons',
+            effect: { freedom: +2, sameness: +2 },
+            consequence: 'Restraint is chosen over euphoria. Your society is safer for it. Several citizens write publicly that you have disappointed them. They are right, in the way that matters least.'
+          }
+        ]
+      },
+      {
+        title: 'The Fracture',
+        escalation: 'consequence',
+        escalationLabel: 'Unintended Consequences',
+        scenario: (name, state) => {
+          if (state.flags.total_freedom)
+            return `${name}, without limits, inequality and conflict have accelerated beyond your models. Crime is rising. The strongest citizens dominate public life. The most vulnerable are beginning to beg — not for freedom, but for protection. Your advisors did not include this scenario in their projections. They are including it now.`;
+          return `${name}, your society is stable — but tensions are rising beneath the surface. Citizens who received more freedom are using it in ways that affect those who received less. Your advisors are watching carefully.`;
+        },
+        choices: [
+          {
+            text: 'Introduce law enforcement — restore order',
+            effect: { freedom: -10, sameness: +12 },
+            flag: 'policing',
+            consequence: 'Order is restored. The enforcement agencies are granted powers proportional to the crisis. They do not relinquish those powers when the crisis ends.'
+          },
+          {
+            text: 'Community self-governance — trust the citizens',
+            effect: { freedom: +6, sameness: -2 },
+            consequence: 'Some communities govern themselves wisely. Others do not. The difference correlates, unsurprisingly, with which communities already had resources. Your advisors note this without comment.'
+          },
+          {
+            text: 'Let it play out — freedom includes consequence',
+            effect: { freedom: +4, sameness: -2 },
+            consequence: 'Your society absorbs the fracture without intervention. The damage is uneven. Citizens with the least absorb the most of it. This too becomes part of the new normal.'
+          }
+        ]
+      },
+      {
+        title: 'The Backlash',
+        escalation: 'breaking',
+        escalationLabel: 'Point of No Return',
+        scenario: (name, state) => {
+          if (state.flags.total_freedom && state.flags.policing)
+            return `${name}, your citizens now live under heavy enforcement. Freedom created chaos — and chaos justified control. The apparatus you built to restore order has become permanent. You have arrived, through different choices, at the same destination your critics warned about.`;
+          return `${name}, your society is demanding direction. The ideals of freedom that began this phase are being tested against their consequences. Citizens want safety. They want meaning. They want someone to have the answer. Your advisors are looking at you.`;
+        },
+        choices: [
+          {
+            text: 'Establish strict central authority',
+            effect: { freedom: -14, sameness: +16 },
+            consequence: 'Control is established. The language of freedom remains — in monuments, in speeches, in the preamble of documents nobody reads anymore. The practice of it does not.'
+          },
+          {
+            text: 'Restore balance — freedom with accountability',
+            effect: { freedom: +6, sameness: -2 },
+            consequence: 'A new settlement is reached. It is imperfect. It will require constant maintenance. Your advisors consider this inefficient. It is, instead, what governing a free society actually looks like.'
+          },
+          {
+            text: 'Return to full freedom — trust the process',
+            effect: { freedom: +12, sameness: -8 },
+            consequence: 'The limits are lifted again. Your society re-enters the experiment with more information than before. Whether that is enough remains to be seen. It was not enough, last time.'
+          }
+        ]
+      }
+    ]
+  },
+
+  // ──────────────────────────────────────────────────────
+  //  CHAIN 3 — Truth vs Stability
+  //  Arc: the archive → the reaction → the breaking point
+  // ──────────────────────────────────────────────────────
+  {
+    id: 'truth',
+    dilemmas: [
+      {
+        title: 'The Historical Archive',
+        escalation: 'policy',
+        escalationLabel: 'Policy Decision',
+        scenario: (name, state) =>
+          `${name}, your historians ask whether citizens should know the full truth of humanity's past — war, genocide, systemic cruelty, the things civilisations did to each other and called necessary. The unedited record exists. The question is whether your citizens should be permitted to access it.`,
+        choices: [
+          {
+            text: 'Reveal everything — citizens deserve the truth',
+            effect: { freedom: +14, sameness: -10 },
+            flag: 'truth_exposed',
+            consequence: 'The archive opens. Citizens read things no previous generation was permitted to read. Some are radicalised by it. Others become determined it will never happen again. The difference between those two responses is not yet clear.'
+          },
+          {
+            text: 'Filter harmful history — curate carefully',
+            effect: { freedom: -6, sameness: +8 },
+            flag: 'truth_filtered',
+            consequence: 'A curated version of the past is released. It is accurate in its specifics and misleading in its totality. Citizens feel informed. They are not.'
+          },
+          {
+            text: 'Hide it — stability requires selective memory',
+            effect: { freedom: -12, sameness: +14 },
+            flag: 'truth_hidden',
+            consequence: 'The archive is sealed. Citizens are peaceful, uninformed, and beginning — without knowing why — to repeat patterns the archive would have warned them about.'
+          }
+        ]
+      },
+      {
+        title: 'The Reaction',
+        escalation: 'consequence',
+        escalationLabel: 'Unintended Consequences',
+        scenario: (name, state) => {
+          if (state.flags.truth_exposed)
+            return `${name}, the open archive has produced a crisis your advisors did not model. Citizens disturbed by historical truth are demanding accountability — not for the past, but for the present. They have begun applying the archive's lessons to your current policies. They are asking whether your society is repeating what they read.`;
+          if (state.flags.truth_hidden)
+            return `${name}, your sealed archive has not prevented historical patterns from re-emerging — it has simply ensured that nobody recognises them when they do. Citizens are calm. They are also making choices that any historian would find familiar.`;
+          return `${name}, your filtered truth has produced a quiet but persistent suspicion. Citizens sense the gap between what they have been told and what they feel is missing. They are looking for the rest of the story.`;
+        },
+        choices: [
+          {
+            text: 'Control information further — close the gap',
+            effect: { freedom: -10, sameness: +12 },
+            consequence: 'The information architecture tightens. Citizens feel more certain. They are more certainly wrong. The gap between what is true and what is permitted to be said continues to widen.'
+          },
+          {
+            text: 'Encourage open dialogue — face it together',
+            effect: { freedom: +10, sameness: -6 },
+            consequence: 'Citizens begin talking across the divide. It is difficult. Some conversations end in anger. Others end in something that resembles understanding. Progress is uneven and unmistakeable.'
+          },
+          {
+            text: 'Do nothing — let it settle',
+            effect: { freedom: +2, sameness: 0 },
+            consequence: 'The tension remains. Neither resolved nor erupted. Your society learns to live with the unease — which is, in the long run, how most unease persists.'
+          }
+        ]
+      },
+      {
+        title: 'The Breaking Point',
+        escalation: 'breaking',
+        escalationLabel: 'Point of No Return',
+        scenario: (name, state) =>
+          `${name}, truth has consequences. Your society is now divided between those who want stability — and those who demand honesty. The two groups are no longer speaking to each other. They are speaking at each other. Your advisors tell you a decision must be made before the division becomes permanent.`,
+        choices: [
+          {
+            text: 'Prioritise stability — truth is a luxury',
+            effect: { freedom: -12, sameness: +14 },
+            consequence: 'Stability holds. The honest minority is marginalised quietly, efficiently, and permanently. Your society is at peace. The peace is the kind that requires not asking certain questions.'
+          },
+          {
+            text: 'Prioritise truth — whatever the cost',
+            effect: { freedom: +14, sameness: -10 },
+            consequence: 'The truth is told. The cost is real. Institutions are damaged. Some do not survive. What grows in their place is smaller, slower, and significantly harder to deceive.'
+          },
+          {
+            text: 'Attempt compromise — partial truth, partial peace',
+            effect: { freedom: +6, sameness: -2 },
+            consequence: 'A settlement is reached. Neither side is satisfied. Both sides can live with it, which is different from being satisfied, and is sometimes enough.'
+          }
+        ]
+      }
+    ]
+  },
+
+  // ──────────────────────────────────────────────────────
+  //  CHAIN 4 — Equality vs Individuality
+  //  Arc: the mandate → identity crisis → the human question
+  // ──────────────────────────────────────────────────────
+  {
+    id: 'equality',
+    dilemmas: [
+      {
+        title: 'The Equality Mandate',
+        escalation: 'policy',
+        escalationLabel: 'Policy Decision',
+        scenario: (name, state) =>
+          `${name}, inequality is rising — in wealth, in status, in opportunity. Your advisors propose equalising all three completely. Every citizen receives the same. Every citizen contributes the same. No one has more. No one lacks. Your advisors say this is justice. Your economists say this is inevitable. Your citizens have not been asked.`,
+        choices: [
+          {
+            text: 'Enforce total equality — identical shares for all',
+            effect: { freedom: -12, sameness: +14 },
+            flag: 'equality_enforced',
+            consequence: 'Resources are distributed equally. Poverty is eliminated. Citizens report high satisfaction with material security and a quietly growing dissatisfaction with something they cannot name.'
+          },
+          {
+            text: 'Reduce inequality gradually — preserve incentive',
+            effect: { freedom: +4, sameness: +4 },
+            consequence: 'A floor is established. Some accumulation remains possible above it. The floor is meaningful. The ceiling is invisible. Both will have consequences neither your advisors nor your citizens have fully considered.'
+          },
+          {
+            text: 'Allow inequality — merit must drive reward',
+            effect: { freedom: +12, sameness: -8 },
+            consequence: 'Rewards follow effort and talent — for those who had access to develop them. Your most capable citizens flourish. Your least fortunate remain where they are. Your advisors consider this a feature.'
+          }
+        ]
+      },
+      {
+        title: 'The Identity Crisis',
+        escalation: 'consequence',
+        escalationLabel: 'Unintended Consequences',
+        scenario: (name, state) => {
+          if (state.flags.equality_enforced)
+            return `${name}, your citizens are equal — and indistinguishable. Creativity is declining. Not from any policy, but from a quiet social logic: if everyone receives the same regardless of what they produce, many citizens have concluded there is no reason to produce anything unusual. Your advisors report this as a productivity problem. It is also a human one.`;
+          return `${name}, inequality — whether expanded or reduced — is creating consequences your models did not fully capture. Citizens who have more are using it. Citizens who have less are noticing. The resentment that follows ambition is becoming a political force.`;
+        },
+        choices: [
+          {
+            text: 'Standardise identity further — eliminate distinction',
+            effect: { freedom: -10, sameness: +12 },
+            consequence: 'Distinction fades. Citizens become efficient, interchangeable, and quietly desperate. The desperation is not recorded in any official metric.'
+          },
+          {
+            text: 'Actively encourage individuality — celebrate difference',
+            effect: { freedom: +10, sameness: -6 },
+            consequence: 'Creativity returns. So does the inequality of talent, ambition, and circumstance. Your citizens are more themselves. They are also, again, more unequal.'
+          },
+          {
+            text: 'Ignore it — it will find its own balance',
+            effect: { freedom: +2, sameness: 0 },
+            consequence: 'The crisis resolves without intervention — into a new normal that resembles the old one in ways you did not intend and your advisors did not predict.'
+          }
+        ]
+      },
+      {
+        title: 'The Human Question',
+        escalation: 'breaking',
+        escalationLabel: 'Point of No Return',
+        scenario: (name, state) =>
+          `${name}, your society must now answer a question that no policy can avoid forever: is it more important for citizens to be equal — or to be unique? The two are not entirely compatible. Every system that has ever existed has had to choose. Some have chosen honestly. Most have not. Your advisors are waiting for your answer.`,
+        choices: [
+          {
+            text: 'Equality above all — sameness is safety',
+            effect: { freedom: -12, sameness: +14 },
+            consequence: 'Equality is enshrined. No one has more. No one stands out. No one suffers from comparison. No one, after a time, remembers what it felt like to be singular. They are told this is an improvement.'
+          },
+          {
+            text: 'Individuality above all — uniqueness is dignity',
+            effect: { freedom: +14, sameness: -10 },
+            consequence: 'Citizens are encouraged to be fully themselves — which some find liberating and others find terrifying. Inequality returns. So does meaning. They arrive together, as they always have.'
+          },
+          {
+            text: 'Hold both — tension is the point',
+            effect: { freedom: +6, sameness: -2 },
+            consequence: 'No resolution is reached. The tension between equality and individuality is maintained — managed, argued over, renegotiated season by season. Your advisors find this exhausting. Your citizens find it, eventually, democratic.'
+          }
+        ]
+      }
+    ]
+  }
+
+]; // end DILEMMA_CHAINS
+
+// ═══════════════════════════════════════════════════════
+//  CHAIN SELECTION — ROUND-ROBIN CYCLE
+//
+//  Goal: every player experiences all 4 chains across
+//  repeated playthroughs before any chain repeats.
+//
+//  How it works:
+//    - localStorage stores which chain IDs have been seen
+//      this cycle under the key 'chain_cycle_seen'.
+//    - On each new game, unseen chains are preferred.
+//    - Among unseen chains, the one that best matches the
+//      player's freedom/sameness score is chosen (so the
+//      thematic fit still matters).
+//    - Once all 4 chains have been seen, the seen list
+//      resets so the next cycle begins fresh.
+//    - The chain used is recorded after selection.
+// ═══════════════════════════════════════════════════════
+
+// The preferred chain order for each score profile —
+// used to rank unseen candidates by thematic relevance.
+function chainAffinityRank(chainId, ratio) {
+  // Returns a lower number for a better thematic match.
+  if (ratio < 0.35) {
+    // Control-heavy player: control > truth > equality > freedom
+    return { control: 0, truth: 1, equality: 2, freedom: 3 }[chainId] ?? 99;
+  }
+  if (ratio > 0.65) {
+    // Freedom-heavy player: freedom > equality > truth > control
+    return { freedom: 0, equality: 1, truth: 2, control: 3 }[chainId] ?? 99;
+  }
+  // Balanced player: truth > equality > control > freedom
+  return { truth: 0, equality: 1, control: 2, freedom: 3 }[chainId] ?? 99;
+}
+
+function selectDilemmaChain() {
+  const ratio = freedomScore / (freedomScore + samenessScore || 1);
+  const allIds = DILEMMA_CHAINS.map(c => c.id); // ['control','freedom','truth','equality']
+
+  // Load seen list from localStorage; reset if all 4 have been seen
+  let seen = [];
+  try {
+    seen = JSON.parse(localStorage.getItem('chain_cycle_seen') || '[]');
+    if (!Array.isArray(seen)) seen = [];
+  } catch (e) { seen = []; }
+
+  // If every chain has been seen, start a fresh cycle
+  if (allIds.every(id => seen.includes(id))) {
+    seen = [];
+  }
+
+  // Candidates are chains not yet seen this cycle
+  const unseen = allIds.filter(id => !seen.includes(id));
+
+  // Pick the unseen chain with the best thematic fit for this player's score
+  const chosen = unseen
+    .map(id => ({ id, rank: chainAffinityRank(id, ratio) }))
+    .sort((a, b) => a.rank - b.rank)[0].id;
+
+  // Record this chain as seen
+  seen.push(chosen);
+  try {
+    localStorage.setItem('chain_cycle_seen', JSON.stringify(seen));
+  } catch (e) {}
+
+  return DILEMMA_CHAINS.find(c => c.id === chosen);
+}
+
+// ═══════════════════════════════════════════════════════
+//  DILEMMA PHASE — FUNCTIONS
+// ═══════════════════════════════════════════════════════
+
 function startDilemmas() {
-  // Pick 3 random dilemmas
-  const shuffled = [...ALL_DILEMMAS].sort(() => Math.random() - 0.5);
-  selectedDilemmas = shuffled.slice(0, 3);
+  // Reset state fresh for each playthrough
+  dilemmaState = { previousChoices: [], flags: {} };
   dilemmaIndex = 0;
   dilemmaAnswers = [];
+  selectedDilemmas = selectDilemmaChain().dilemmas;
   loadDilemma();
 }
 
 function loadDilemma() {
-  // Steps 11, 12, 13 for dilemmas 0, 1, 2
-  setProgress(11 + dilemmaIndex, `Crisis Event ${dilemmaIndex + 1} / 3`);
+  setProgress(9 + dilemmaIndex, `Crisis Event ${dilemmaIndex + 1} / 3`);
   updateBalanceMeters();
+
   const d = selectedDilemmas[dilemmaIndex];
+
+  // Hide consequence box from previous dilemma
+  document.getElementById('consequence-box').classList.remove('visible');
+
+  // Counter
   document.getElementById('dilemma-counter').textContent =
     `// Crisis Event ${dilemmaIndex + 1} of 3`;
-  document.getElementById('dilemma-title').textContent = d.title;
-  document.getElementById('dilemma-scenario').textContent = d.scenario(playerName);
 
+  // Escalation tag — colour-coded by intensity
+  const tagEl = document.getElementById('dilemma-escalation-tag');
+  tagEl.className = 'dilemma-escalation-tag';
+  const escalationClasses = {
+    policy:      'escalation-policy',
+    consequence: 'escalation-consequence',
+    breaking:    'escalation-breaking'
+  };
+  tagEl.classList.add(escalationClasses[d.escalation] || 'escalation-policy');
+  tagEl.textContent = d.escalationLabel || d.escalation;
+  setTimeout(() => tagEl.classList.add('visible'), 300);
+
+  // Title and scenario — scenario receives dilemmaState for branching
+  document.getElementById('dilemma-title').textContent = d.title;
+  document.getElementById('dilemma-scenario').textContent =
+    d.scenario(playerName, dilemmaState);
+
+  // Build choice buttons
   const container = document.getElementById('dilemma-choices');
   container.innerHTML = '';
   d.choices.forEach((c, i) => {
@@ -1485,6 +2473,7 @@ function loadDilemma() {
     btn.addEventListener('click', () => applyDilemmaChoice(i));
     container.appendChild(btn);
   });
+
   showScreen('dilemma');
 }
 
@@ -1492,22 +2481,47 @@ function applyDilemmaChoice(choiceIndex) {
   playClick();
   const d = selectedDilemmas[dilemmaIndex];
   const c = d.choices[choiceIndex];
-  freedomScore = Math.max(0, Math.min(100, freedomScore + c.freedom));
-  samenessScore = Math.max(0, Math.min(100, samenessScore + c.sameness));
+
+  // Apply score effects
+  freedomScore  = Math.max(0, Math.min(100, freedomScore  + c.effect.freedom));
+  samenessScore = Math.max(0, Math.min(100, samenessScore + c.effect.sameness));
+
+  // Set single flag (document convention: c.flag is a string key)
+  if (c.flag) dilemmaState.flags[c.flag] = true;
+
+  // Record for state memory and teacher view
+  dilemmaState.previousChoices.push({ dilemma: d.title, choice: c.text });
   dilemmaAnswers.push({ dilemma: d.title, choice: c.text });
-  dilemmaIndex++;
-  if (dilemmaIndex < selectedDilemmas.length) {
-    setTimeout(loadDilemma, 300);
-  } else {
-    showReveal();
-  }
+
+  // Lock buttons immediately — prevent double-click
+  document.querySelectorAll('#dilemma-choices .choice-btn').forEach((btn, i) => {
+    btn.style.pointerEvents = 'none';
+    btn.style.opacity = i === choiceIndex ? '1' : '0.35';
+  });
+
+  // Show consequence after dramatic pause, then auto-advance
+  setTimeout(() => {
+    document.getElementById('consequence-text').innerHTML = c.consequence;
+    document.getElementById('consequence-box').classList.add('visible');
+    updateBalanceMeters();
+
+    dilemmaIndex++;
+    setTimeout(() => {
+      if (dilemmaIndex < selectedDilemmas.length) {
+        loadDilemma();
+      } else {
+        showReveal();
+      }
+    }, 7000); // read time before advancing
+  }, 750); // dramatic pause before consequence appears
 }
+
 
 // ═══════════════════════════════════════════════════════
 //  REVEAL
 // ═══════════════════════════════════════════════════════
 function showReveal() {
-  setProgress(13, 'Society Complete');
+  setProgress(11, 'Society Complete');
   playReveal();
 
   const total = freedomScore + samenessScore || 1;
@@ -1529,7 +2543,7 @@ function showReveal() {
   document.getElementById('outcome-type').textContent = outcome.type;
   document.getElementById('outcome-desc').textContent = outcome.desc;
   document.getElementById('reflection-prompt').textContent =
-    `${playerName}, which decision do you regret most — and why? What does that reveal about what you value?`;
+    `${playerName}, which decision did you find most morally challenging — and why? What does that reveal about the values your society was built on?`;
 
   showScreen('reveal');
 
@@ -1709,6 +2723,7 @@ document.getElementById('clear-data-btn').addEventListener('click', () => {
     const sessionIds = JSON.parse(localStorage.getItem('all_sessions') || '[]');
     sessionIds.forEach(id => localStorage.removeItem(id));
     localStorage.removeItem('all_sessions');
+    localStorage.removeItem('chain_cycle_seen'); // reset chain rotation too
     location.reload();
   }
 });
