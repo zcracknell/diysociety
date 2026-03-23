@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Your Perfect Society</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@100;300;400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #050810;
+    --bg2: #080d1a;
+    --panel: rgba(10, 20, 45, 0.85);
+    --border: rgba(0, 200, 255, 0.18);
+    --accent: #00c8ff;
+    --accent2: #ff4b6e;
+    --accent3: #7b2fff;
+    --text: #c8dff0;
+    --text-dim: #4a6a8a;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Exo 2', sans-serif;
+    --glow: 0 0 18px rgba(0,200,255,0.35), 0 0 60px rgba(0,200,255,0.1);
+    --glow-red: 0 0 18px rgba(255,75,110,0.4);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+  }
+
+  /* ── STARFIELD ── */
+  #stars {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 20% 50%, rgba(123,47,255,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(0,200,255,0.05) 0%, transparent 50%),
+                var(--bg);
+  }
+  #stars canvas { position: absolute; inset: 0; }
+
+  /* ── SCANLINES ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+    animation: scanMove 8s linear infinite;
+  }
+  @keyframes scanMove { from { transform: translateY(0); } to { transform: translateY(4px); } }
+
+  /* ── MAIN WRAPPER ── */
+  #app {
+    position: relative; z-index: 2;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 60px 20px 20px;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    width: 100%; max-width: 760px;
+    animation: fadeIn 0.6s ease forwards;
+  }
+  .screen.active { display: flex; flex-direction: column; align-items: center; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── PANEL ── */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 40px 44px;
+    width: 100%;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 0 1px rgba(0,200,255,0.05), 0 30px 80px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.7;
+  }
+
+  /* ── LOGO / HEADER ── */
+  .logo {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  h1 {
+    font-family: var(--sans);
+    font-size: clamp(26px, 5vw, 42px);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    margin-bottom: 6px;
+    color: #fff;
+  }
+  h1 span { color: var(--accent); text-shadow: var(--glow); }
+
+  .subtitle {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  /* ── NARRATIVE TEXT ── */
+  .narrative {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+  .narrative strong { color: var(--accent); font-weight: 600; }
+  .narrative em { color: #b0b8d0; font-style: normal; font-size: 13px; }
+
+  /* ── INPUT ── */
+  .input-row { width: 100%; margin-bottom: 20px; }
+  .input-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+  }
+  input[type=text], textarea {
+    width: 100%;
+    background: rgba(0,200,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 16px;
+    padding: 14px 18px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  input[type=text]:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+  }
+  textarea { resize: vertical; min-height: 110px; font-size: 14px; line-height: 1.6; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 13px 32px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--accent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.25s;
+    z-index: -1;
+  }
+  .btn:hover { color: #000; box-shadow: var(--glow); }
+  .btn:hover::before { transform: scaleX(1); }
+  .btn:active { transform: scale(0.97); }
+  .btn.full { width: 100%; }
+
+  .btn-group {
+    display: flex; gap: 12px; flex-wrap: wrap; width: 100%;
+    justify-content: center; margin-top: 10px;
+  }
+
+  .choice-btn {
+    flex: 1; min-width: 120px;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    background: rgba(0,200,255,0.03);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.25s;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .choice-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,200,255,0.08);
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
+  }
+  .choice-btn.yes-btn:hover { border-color: #00ff9d; color: #00ff9d; background: rgba(0,255,157,0.06); box-shadow: 0 0 18px rgba(0,255,157,0.3); }
+  .choice-btn.no-btn:hover { border-color: var(--accent2); color: var(--accent2); background: rgba(255,75,110,0.06); box-shadow: var(--glow-red); }
+  .choice-btn.selected { border-color: var(--accent); background: rgba(0,200,255,0.12); }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar-container {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 10px 20px 8px;
+    background: rgba(5, 8, 16, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(0,200,255,0.08);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  #progress-bar-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .progress-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 6px;
+  }
+  .progress-label {
+    font-family: var(--mono);
+    font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase;
+  }
+  .progress-step {
+    font-family: var(--mono);
+    font-size: 9px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase;
+  }
+  .progress-track {
+    width: 100%; height: 2px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent));
+    border-radius: 2px;
+    transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px var(--accent);
+    width: 0%;
+  }
+
+  /* ── BALANCE METER ── */
+  .balance-container {
+    margin-top: 24px; margin-bottom: 4px;
+    width: 100%;
+  }
+  .balance-label {
+    font-family: var(--mono);
+    font-size: 9px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase;
+    margin-bottom: 8px; display: flex; justify-content: space-between;
+  }
+  .balance-track {
+    width: 100%; height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px; overflow: hidden;
+    position: relative;
+  }
+  .balance-freedom {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--accent3), var(--accent));
+    transition: width 0.6s ease;
+    border-radius: 3px;
+  }
+  .balance-sameness {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    background: linear-gradient(270deg, var(--accent2), #ff8c00);
+    transition: width 0.6s ease;
+    border-radius: 3px;
+  }
+
+  /* ── QUESTION CARD ── */
+  .question-number {
+    font-family: var(--mono); font-size: 9px;
+    letter-spacing: 4px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 16px;
+    opacity: 0.7;
+  }
+  .question-text {
+    font-size: clamp(17px, 3vw, 22px);
+    font-weight: 700; line-height: 1.4;
+    color: #fff; margin-bottom: 12px;
+  }
+  .question-subtext {
+    font-size: 13px; font-weight: 300; color: var(--text-dim);
+    margin-bottom: 28px; line-height: 1.6;
+  }
+
+  /* ── DILEMMA ── */
+  .dilemma-tag {
+    display: inline-block;
+    font-family: var(--mono); font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--accent2);
+    border: 1px solid rgba(255,75,110,0.4);
+    padding: 4px 12px; border-radius: 2px;
+    margin-bottom: 20px;
+  }
+  .dilemma-scenario {
+    font-size: 14px; line-height: 1.8;
+    color: var(--text); margin-bottom: 24px;
+    font-weight: 300;
+    border-left: 2px solid rgba(0,200,255,0.3);
+    padding-left: 18px;
+  }
+
+  /* ── REVEAL / FINAL ── */
+  .reveal-name {
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 900; color: var(--accent);
+    text-shadow: var(--glow);
+    margin-bottom: 6px;
+  }
+  .reveal-tagline {
+    font-size: 14px; font-weight: 300; color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+
+  .score-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin: 28px 0;
+  }
+  .score-card {
+    background: rgba(0,200,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px; padding: 22px 20px;
+    text-align: center;
+  }
+  .score-card.freedom-card { border-color: rgba(0,200,255,0.3); }
+  .score-card.sameness-card { border-color: rgba(255,75,110,0.3); }
+  .score-card-label {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
+  }
+  .score-card-value {
+    font-family: var(--mono); font-size: 42px;
+    font-weight: 700; line-height: 1;
+  }
+  .freedom-card .score-card-value { color: var(--accent); text-shadow: var(--glow); }
+  .sameness-card .score-card-value { color: var(--accent2); text-shadow: var(--glow-red); }
+  .score-card-bar {
+    margin-top: 12px; height: 3px;
+    background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden;
+  }
+  .score-card-fill { height: 100%; border-radius: 2px; transition: width 1.2s ease; }
+  .freedom-card .score-card-fill { background: var(--accent); }
+  .sameness-card .score-card-fill { background: var(--accent2); }
+
+  .outcome-box {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 3px; padding: 28px 30px;
+    margin: 20px 0;
+    position: relative;
+  }
+  .outcome-box::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent2), transparent);
+  }
+  .outcome-title {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--accent2); margin-bottom: 14px;
+  }
+  .outcome-type {
+    font-size: clamp(20px, 3.5vw, 28px); font-weight: 900;
+    color: #fff; margin-bottom: 14px;
+  }
+  .outcome-desc {
+    font-size: 14px; line-height: 1.8; color: var(--text); font-weight: 300;
+  }
+
+  /* ── GLITCH EFFECT ── */
+  .glitch {
+    position: relative;
+    animation: glitchAnim 0.4s steps(2) 0.3s 3 forwards;
+  }
+  @keyframes glitchAnim {
+    0%   { clip-path: inset(30% 0 50% 0); transform: translate(-4px, 0); color: var(--accent2); }
+    25%  { clip-path: inset(60% 0 10% 0); transform: translate(4px, 0); color: var(--accent); }
+    50%  { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 0); }
+    75%  { clip-path: inset(50% 0 30% 0); transform: translate(2px, 0); color: var(--accent2); }
+    100% { clip-path: inset(0); transform: translate(0); color: #fff; }
+  }
+
+  /* ── TEACHER MODE ── */
+  .teacher-header {
+    background: rgba(255,75,110,0.08);
+    border: 1px solid rgba(255,75,110,0.3);
+    border-radius: 3px; padding: 10px 18px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--accent2);
+    margin-bottom: 24px; text-align: center;
+    width: 100%;
+  }
+  .teacher-stat-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px; margin-bottom: 24px;
+  }
+  .teacher-stat {
+    background: rgba(0,200,255,0.04); border: 1px solid var(--border);
+    border-radius: 3px; padding: 18px 16px; text-align: center;
+  }
+  .teacher-stat-num {
+    font-family: var(--mono); font-size: 32px; font-weight: 700;
+    color: var(--accent); text-shadow: var(--glow);
+  }
+  .teacher-stat-lbl {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-dim); margin-top: 6px;
+  }
+  .student-table {
+    width: 100%; border-collapse: collapse; margin-top: 10px;
+  }
+  .student-table th {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--accent);
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .student-table td {
+    font-size: 13px; color: var(--text);
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .student-table tr:hover td { background: rgba(0,200,255,0.03); }
+  .type-pill {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 2px; font-family: var(--mono);
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .type-Authoritarian { background: rgba(255,75,110,0.15); color: var(--accent2); }
+  .type-Balanced { background: rgba(0,200,255,0.12); color: var(--accent); }
+  .type-Utopian { background: rgba(123,47,255,0.15); color: #b07fff; }
+  .type-Anarchist { background: rgba(0,255,157,0.12); color: #00ff9d; }
+  .type-Isolationist { background: rgba(255,200,0,0.12); color: #ffc800; }
+
+  .chart-wrap { width: 100%; max-width: 480px; margin: 0 auto 24px; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 24px 0;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center; padding: 48px 20px;
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 2px; color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* ── MISC ── */
+  .mb8 { margin-bottom: 8px; }
+  .mb16 { margin-bottom: 16px; }
+  .mb24 { margin-bottom: 24px; }
+  .mt24 { margin-top: 24px; }
+  .text-center { text-align: center; }
+  .text-dim { color: var(--text-dim); font-size: 13px; }
+
+
+  /* ── FOUNDING LAWS SCREEN ── */
+  .laws-title {
+    font-family: var(--sans);
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .laws-subtext {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    font-family: var(--mono);
+    letter-spacing: 1px;
+  }
+  .laws-scan-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    transition: opacity 0.5s ease;
+  }
+  .laws-scan-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: var(--glow);
+    animation: scanPulse 1s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes scanPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.3; transform: scale(0.6); }
+  }
+  .laws-scan-text {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+  .laws-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .law-card {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 16px 18px 16px 22px;
+    background: rgba(0,0,0,0.25);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .law-card.revealed { opacity: 1; transform: translateY(0); }
+  .law-card::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+  }
+  .law-card.choice-yes  { border-color: rgba(0,255,157,0.22); background: rgba(0,255,157,0.04); }
+  .law-card.choice-yes::after  { background: #00ff9d; box-shadow: 0 0 10px rgba(0,255,157,0.5); }
+  .law-card.choice-no   { border-color: rgba(255,75,110,0.22); background: rgba(255,75,110,0.04); }
+  .law-card.choice-no::after   { background: var(--accent2); box-shadow: 0 0 10px rgba(255,75,110,0.4); }
+  .law-card.choice-dep  { border-color: rgba(180,180,220,0.18); background: rgba(180,180,220,0.03); }
+  .law-card.choice-dep::after  { background: #6677aa; }
+  .law-card-number {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 7px;
+  }
+  .law-card-question {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .law-card-verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+  .verdict-yes { color: #00ff9d; background: rgba(0,255,157,0.1);  border: 1px solid rgba(0,255,157,0.3); }
+  .verdict-no  { color: var(--accent2); background: rgba(255,75,110,0.1); border: 1px solid rgba(255,75,110,0.3); }
+  .verdict-dep { color: #8899bb; background: rgba(136,153,187,0.08); border: 1px solid rgba(136,153,187,0.2); }
+  .laws-analysis {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 20px 22px;
+    background: rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .laws-analysis.revealed { opacity: 1; }
+  .laws-analysis::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent3), transparent);
+  }
+  .laws-analysis-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 10px;
+  }
+  .laws-analysis-text {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .laws-analysis-text strong { color: #fff; font-weight: 700; }
+
+  @media (max-width: 540px) {
+    .panel { padding: 28px 22px; }
+    .score-grid { grid-template-columns: 1fr; }
+    .btn-group { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"><canvas id="starCanvas"></canvas></div>
+
+<div id="app">
+
+  <!-- PROGRESS BAR -->
+  <div id="progress-bar-container">
+    <div class="progress-meta">
+      <span class="progress-label">Society Construction</span>
+      <span class="progress-step" id="progress-step-label">—</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ INTRO SCREEN ══════════════════════════════ -->
+  <div class="screen active" id="screen-intro">
+    <div class="panel">
+      <div class="logo">// Initiative: Genesis Protocol</div>
+      <h1>Design Your<br><span>Perfect Society</span></h1>
+      <div class="subtitle">A simulation of power &amp; consequence</div>
+      <p class="narrative">
+        Somewhere beyond the edge of the known world, a new civilisation awaits its architect.<br><br>
+        <strong>You have been chosen.</strong><br><br>
+        You will make decisions that shape millions of lives. You will choose what they feel, what they remember, what they are allowed to become. You believe you are building something <em>perfect</em>.<br><br>
+        History will judge whether you were right.
+      </p>
+      <div class="input-row">
+        <label class="input-label" for="name-input">// Architect Designation</label>
+        <input type="text" id="name-input" placeholder="Enter your name" maxlength="40" autocomplete="off" />
+      </div>
+      <div id="name-error" style="color:var(--accent2);font-family:var(--mono);font-size:11px;margin-bottom:12px;display:none;">
+        ⚠ Designation required to begin.
+      </div>
+      <button class="btn full" id="begin-btn">Begin Construction →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ FOUNDING SCREEN ══════════════════════════════ -->
+  <div class="screen" id="screen-founding">
+    <div class="panel">
+      <div class="question-number" id="founding-counter">// Founding Decision 1 of 8</div>
+      <div class="question-text" id="founding-question">Loading…</div>
+      <div class="question-subtext" id="founding-subtext"></div>
+      <div class="btn-group">
+        <button class="choice-btn yes-btn" id="found-yes">Yes</button>
+        <button class="choice-btn" id="found-depends" style="border-color:rgba(200,200,200,0.2)">It Depends</button>
+        <button class="choice-btn no-btn" id="found-no">No</button>
+      </div>
+      <div class="balance-container">
+        <div class="balance-label">
+          <span>Freedom ↑</span>
+          <span>Societal Balance</span>
+          <span>Sameness ↑</span>
+        </div>
+        <div class="balance-track">
+          <div class="balance-freedom" id="balance-freedom" style="width:50%"></div>
+          <div class="balance-sameness" id="balance-sameness" style="width:50%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ FOUNDING LAWS SCREEN ══════════════════════════════ -->
+  <div class="screen" id="screen-laws">
+    <div class="panel">
+      <div class="logo">// Constitutional Archive — Classified</div>
+      <h2 class="laws-title">Your Society's <span style="color:var(--accent);text-shadow:var(--glow)">Founding Laws</span></h2>
+      <p class="laws-subtext" id="laws-subtext"></p>
+
+      <div class="laws-scan-row" id="laws-scan-row">
+        <span class="laws-scan-dot"></span>
+        <span class="laws-scan-text" id="laws-scan-text">Analysing societal framework…</span>
+      </div>
+
+      <div class="laws-grid" id="laws-grid"></div>
+
+      <div class="laws-analysis" id="laws-analysis">
+        <div class="laws-analysis-label">// System Analysis</div>
+        <div class="laws-analysis-text" id="laws-analysis-text"></div>
+      </div>
+
+      <button class="btn full" id="laws-proceed-btn" style="margin-top:28px">
+        Proceed to Crisis Scenarios →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ TRANSITION SCREEN ══════════════════════════════ -->
+  <div class="screen" id="screen-transition">
+    <div class="panel text-center">
+      <div class="dilemma-tag">Phase 2 Unlocking</div>
+      <div class="question-text" id="transition-text"></div>
+      <p class="narrative mt24">
+        Your foundational laws are set. But governing a society means facing moments of crisis — decisions that cannot be undone.<br><br>
+        The following scenarios have no easy answers. Choose carefully.
+      </p>
+      <button class="btn" id="transition-btn">Face the Dilemmas →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ DILEMMA SCREEN ══════════════════════════════ -->
+  <div class="screen" id="screen-dilemma">
+    <div class="panel">
+      <div class="dilemma-tag" id="dilemma-counter">// Crisis Event 1 of 3</div>
+      <div class="question-text" id="dilemma-title"></div>
+      <div class="dilemma-scenario" id="dilemma-scenario"></div>
+      <div class="btn-group" id="dilemma-choices"></div>
+      <div class="balance-container">
+        <div class="balance-label">
+          <span>Freedom ↑</span>
+          <span>Societal Balance</span>
+          <span>Sameness ↑</span>
+        </div>
+        <div class="balance-track">
+          <div class="balance-freedom" id="balance-freedom2" style="width:50%"></div>
+          <div class="balance-sameness" id="balance-sameness2" style="width:50%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ REVEAL SCREEN ══════════════════════════════ -->
+  <div class="screen" id="screen-reveal">
+    <div class="panel">
+      <div class="logo">// Society Report — Classified</div>
+      <div class="reveal-name glitch" id="reveal-name"></div>
+      <div class="reveal-tagline" id="reveal-tagline"></div>
+
+      <div class="score-grid">
+        <div class="score-card freedom-card">
+          <div class="score-card-label">// Freedom Index</div>
+          <div class="score-card-value" id="reveal-freedom">0%</div>
+          <div class="score-card-bar"><div class="score-card-fill" id="freedom-bar" style="width:0%"></div></div>
+        </div>
+        <div class="score-card sameness-card">
+          <div class="score-card-label">// Control Index</div>
+          <div class="score-card-value" id="reveal-sameness">0%</div>
+          <div class="score-card-bar"><div class="score-card-fill" id="sameness-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="outcome-box">
+        <div class="outcome-title">// Society Classification</div>
+        <div class="outcome-type" id="outcome-type"></div>
+        <div class="outcome-desc" id="outcome-desc"></div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="outcome-title">// Final Reflection</div>
+      <p class="narrative mb16" id="reflection-prompt"></p>
+      <div class="input-row">
+        <label class="input-label" for="reflection-input">// Your Response</label>
+        <textarea id="reflection-input" placeholder="Write your reflection here…"></textarea>
+      </div>
+      <button class="btn full" id="save-reflection-btn">Save &amp; Submit →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ DONE SCREEN ══════════════════════════════ -->
+  <div class="screen" id="screen-done">
+    <div class="panel text-center">
+      <div class="logo">// Simulation Complete</div>
+      <div class="question-text mb16" id="done-msg"></div>
+      <p class="narrative" id="done-giver-link"></p>
+      <div class="divider"></div>
+      <p class="text-dim">Your responses have been saved to this device.</p>
+      <button class="btn mt24" id="restart-btn" style="margin-top:20px">New Simulation ↺</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ TEACHER SCREEN ══════════════════════════════ -->
+  <div class="screen" id="screen-teacher" style="max-width:900px;">
+    <div class="panel">
+      <div class="teacher-header">⚠ TEACHER MODE — AGGREGATED CLASS DATA</div>
+      <h1 style="font-size:28px;margin-bottom:24px;">Class Overview</h1>
+
+      <div class="teacher-stat-grid" id="teacher-stats"></div>
+      <div class="divider"></div>
+
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">// Society Type Distribution</div>
+      <div class="chart-wrap"><canvas id="typeChart"></canvas></div>
+
+      <div class="divider"></div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">// Score Distribution</div>
+      <div class="chart-wrap"><canvas id="scoreChart"></canvas></div>
+
+      <div class="divider"></div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">// Student Results</div>
+      <div id="student-table-wrap"></div>
+
+      <div class="divider"></div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">// Most Common Founding Choices</div>
+      <div id="common-choices"></div>
+
+      <div class="divider"></div>
+      <button class="btn" id="clear-data-btn" style="border-color:var(--accent2);color:var(--accent2);">Clear All Data ⚠</button>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STARFIELD
+// ═══════════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('starCanvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = Array.from({length: 180}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.4 + 0.2,
+      a: Math.random(),
+      speed: Math.random() * 0.4 + 0.05
+    }));
+  }
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.a += s.speed * 0.01;
+      if (s.a > 1) s.a = 0;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180,220,255,${Math.abs(Math.sin(s.a)) * 0.7})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize);
+  resize(); draw();
+})();
+
+// ═══════════════════════════════════════════════════════
+//  SOUND (subtle click)
+// ═══════════════════════════════════════════════════════
+let audioCtx;
+function playClick() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.12);
+  } catch(e){}
+}
+function playReveal() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    [220, 277, 330, 415].forEach((f, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.type = 'sine'; osc.frequency.value = f;
+      const t = audioCtx.currentTime + i * 0.12;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.06, t + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+      osc.start(t); osc.stop(t + 0.5);
+    });
+  } catch(e){}
+}
+
+// ═══════════════════════════════════════════════════════
+//  GAME DATA
+// ═══════════════════════════════════════════════════════
+
+// ── FOUNDING POOL ────────────────────────────────────────
+// Each question carries:
+//   shortLabel  — displayed on the Founding Laws summary card
+//   weight      — likelihood of being drawn (higher = more common)
+//   impactTag   — hidden thematic descriptor (not shown to player)
+//   yes/no/dep  — score effects: { freedom, sameness }
+// ─────────────────────────────────────────────────────────
+const FOUNDING_POOL = [
+
+  // ── ORIGINAL 8 (core questions — always high weight) ──
+
+  {
+    shortLabel: "Citizens choose their own occupation",
+    question:   "Will citizens be free to choose their own occupation?",
+    sub:        "Or will the state assign roles based on aptitude and societal need?",
+    weight: 9, impactTag: "moderate-control",
+    yes: { freedom: +12, sameness: -8  },
+    no:  { freedom: -10, sameness: +12 },
+    dep: { freedom: +4,  sameness: +4  }
+  },
+  {
+    shortLabel: "Citizens choose their own life partner",
+    question:   "Will citizens choose their own life partners?",
+    sub:        "Or will partnerships be arranged for compatibility and stability?",
+    weight: 9, impactTag: "moderate-control",
+    yes: { freedom: +12, sameness: -8  },
+    no:  { freedom: -10, sameness: +12 },
+    dep: { freedom: +3,  sameness: +5  }
+  },
+  {
+    shortLabel: "Access to all historical information",
+    question:   "Will citizens have access to all historical information — including records of war, famine, and atrocity?",
+    sub:        "Painful truths can destabilise — but ignorance has its own dangers.",
+    weight: 9, impactTag: "high-control-impact",
+    yes: { freedom: +14, sameness: -10 },
+    no:  { freedom: -12, sameness: +14 },
+    dep: { freedom: +5,  sameness: +5  }
+  },
+  {
+    shortLabel: "Families choose how many children to have",
+    question:   "Will families be permitted to have as many children as they choose?",
+    sub:        "Unlimited reproduction may strain resources; restrictions may feel cruel.",
+    weight: 7, impactTag: "moderate-control",
+    yes: { freedom: +10, sameness: -6  },
+    no:  { freedom: -8,  sameness: +10 },
+    dep: { freedom: +3,  sameness: +5  }
+  },
+  {
+    shortLabel: "Citizens may own more wealth than others",
+    question:   "Will citizens be permitted to own significantly more wealth than others?",
+    sub:        "Inequality drives ambition — but also resentment and suffering.",
+    weight: 7, impactTag: "moderate-control",
+    yes: { freedom: +10, sameness: -8  },
+    no:  { freedom: -6,  sameness: +10 },
+    dep: { freedom: +3,  sameness: +3  }
+  },
+  {
+    shortLabel: "Citizens may leave the society permanently",
+    question:   "Will citizens have the freedom to leave the society permanently?",
+    sub:        "A society you cannot leave is a prison. But open borders risk instability.",
+    weight: 9, impactTag: "high-control-impact",
+    yes: { freedom: +14, sameness: -10 },
+    no:  { freedom: -12, sameness: +14 },
+    dep: { freedom: +4,  sameness: +6  }
+  },
+  {
+    shortLabel: "Formal punishment exists for rule-breaking",
+    question:   "Will your society impose formal punishment for breaking the rules?",
+    sub:        "Consequences maintain order — but punishment can become cruelty.",
+    weight: 8, impactTag: "moderate-control",
+    yes: { freedom: -6,  sameness: +10 },
+    no:  { freedom: +10, sameness: -6  },
+    dep: { freedom: +2,  sameness: +4  }
+  },
+  {
+    shortLabel: "A single leader holds final authority",
+    question:   "Will a single leader or council hold final decision-making authority?",
+    sub:        "Centralised power enables swift action — and absolute corruption.",
+    weight: 9, impactTag: "high-control-impact",
+    yes: { freedom: -10, sameness: +12 },
+    no:  { freedom: +12, sameness: -8  },
+    dep: { freedom: +2,  sameness: +4  }
+  },
+
+  // ── NEW 10 (added questions — varied weights) ──
+
+  {
+    shortLabel: "Dangerous activities restricted or banned",
+    question:   "Will potentially dangerous activities — extreme sports, unsanctioned travel, exploration — be restricted or banned?",
+    sub:        "Safety protects citizens. But a life without risk may also be a life without discovery.",
+    weight: 6, impactTag: "moderate-control",
+    yes: { freedom: -8,  sameness: +10 },
+    no:  { freedom: +10, sameness: -6  },
+    dep: { freedom: +3,  sameness: +3  }
+  },
+  {
+    shortLabel: "Individual expression through appearance and behaviour",
+    question:   "Will citizens be allowed to express individuality through appearance, language, and behaviour?",
+    sub:        "Sameness in appearance creates social cohesion — or erases identity entirely.",
+    weight: 8, impactTag: "high-control-impact",
+    yes: { freedom: +13, sameness: -9  },
+    no:  { freedom: -11, sameness: +13 },
+    dep: { freedom: +4,  sameness: +4  }
+  },
+  {
+    shortLabel: "Children raised by families or the state",
+    question:   "Will children be raised by their biological families — or by the community and state?",
+    sub:        "State-raised children can be educated for stability. Family-raised children grow with love — and inherited prejudice.",
+    weight: 9, impactTag: "high-control-impact",
+    yes: { freedom: +13, sameness: -10 },
+    no:  { freedom: -12, sameness: +14 },
+    dep: { freedom: +3,  sameness: +5  }
+  },
+  {
+    shortLabel: "Certain knowledge restricted to trained individuals",
+    question:   "Will certain knowledge — scientific, historical, or philosophical — be restricted to trained or approved individuals?",
+    sub:        "Not all knowledge is safe in untrained hands. But who decides which hands are safe enough?",
+    weight: 8, impactTag: "high-control-impact",
+    yes: { freedom: -10, sameness: +12 },
+    no:  { freedom: +12, sameness: -8  },
+    dep: { freedom: +2,  sameness: +5  }
+  },
+  {
+    shortLabel: "Controlled release for the terminally ill or elderly",
+    question:   "Will your society allow — or require — a controlled release for citizens who are terminally ill or too elderly to contribute?",
+    sub:        "Some call it mercy. Others call it murder. The word you use says everything about your society.",
+    weight: 9, impactTag: "extreme-control-impact",
+    yes: { freedom: -14, sameness: +15 },
+    no:  { freedom: +12, sameness: -9  },
+    dep: { freedom: -4,  sameness: +6  }
+  },
+  {
+    shortLabel: "Citizens may openly criticise the government",
+    question:   "Will citizens be allowed to openly criticise the government and its rules?",
+    sub:        "Dissent is the engine of improvement — and the fuel of revolution.",
+    weight: 9, impactTag: "high-control-impact",
+    yes: { freedom: +14, sameness: -10 },
+    no:  { freedom: -12, sameness: +14 },
+    dep: { freedom: +4,  sameness: +4  }
+  },
+  {
+    shortLabel: "Equal resources regardless of effort or ability",
+    question:   "Will all citizens receive exactly the same resources, regardless of effort or ability?",
+    sub:        "Perfect equality removes envy. It also removes the incentive to excel.",
+    weight: 7, impactTag: "moderate-control",
+    yes: { freedom: -6,  sameness: +12 },
+    no:  { freedom: +10, sameness: -7  },
+    dep: { freedom: +3,  sameness: +4  }
+  },
+  {
+    shortLabel: "Private communications monitored for dangerous ideas",
+    question:   "Will your society monitor citizens' private communications — or attempt to identify dangerous thoughts — to prevent unrest?",
+    sub:        "If citizens know they are watched, they may behave. But a watched person is not a free person.",
+    weight: 9, impactTag: "extreme-control-impact",
+    yes: { freedom: -14, sameness: +15 },
+    no:  { freedom: +14, sameness: -10 },
+    dep: { freedom: -3,  sameness: +7  }
+  },
+  {
+    shortLabel: "Artistic expression limited if it challenges harmony",
+    question:   "Will artistic expression be limited if it risks challenging social harmony or questioning authority?",
+    sub:        "Art that unsettles can also illuminate. The question is who decides what is too unsettling.",
+    weight: 8, impactTag: "high-control-impact",
+    yes: { freedom: -10, sameness: +12 },
+    no:  { freedom: +12, sameness: -8  },
+    dep: { freedom: +3,  sameness: +4  }
+  },
+  {
+    shortLabel: "Extreme emotions regulated or suppressed",
+    question:   "Will your society regulate or suppress extreme emotions — grief, rage, euphoria — to maintain stability?",
+    sub:        "Emotional moderation prevents violence and despair. It also prevents rapture, passion, and the full experience of being human.",
+    weight: 9, impactTag: "extreme-control-impact",
+    yes: { freedom: -13, sameness: +14 },
+    no:  { freedom: +13, sameness: -9  },
+    dep: { freedom: -2,  sameness: +6  }
+  }
+];
+
+// ── WEIGHTED RANDOM SELECTION ─────────────────────────────
+// Selects `count` questions using weighted probability.
+// Guarantees at least 2 "extreme-control-impact" questions per playthrough
+// so every student faces at least two of the most morally weighty decisions.
+function selectFoundingQuestions(pool, count) {
+  const extremes = pool.filter(q => q.impactTag === 'extreme-control-impact');
+  const rest     = pool.filter(q => q.impactTag !== 'extreme-control-impact');
+
+  // Guarantee 2 extreme questions, shuffled so order varies
+  const shuffledExtremes = [...extremes].sort(() => Math.random() - 0.5);
+  const guaranteed = shuffledExtremes.slice(0, Math.min(2, count));
+
+  // Fill remaining slots via weighted draw without replacement
+  const available = [...rest].sort(() => Math.random() - 0.5);
+  const needed    = count - guaranteed.length;
+  const selected  = [...guaranteed];
+
+  for (let i = 0; i < needed && available.length > 0; i++) {
+    let rand = Math.random() * available.reduce((s, q) => s + q.weight, 0);
+    for (let j = 0; j < available.length; j++) {
+      rand -= available[j].weight;
+      if (rand <= 0) {
+        selected.push(available[j]);
+        available.splice(j, 1);
+        break;
+      }
+    }
+  }
+
+  // Final shuffle so guaranteed questions don't cluster at the top
+  return selected.sort(() => Math.random() - 0.5);
+}
+
+// Populated fresh at the start of each game session
+let selectedFoundingQuestions = [];
+
+const ALL_DILEMMAS = [
+  {
+    title: "The Pain Elimination",
+    scenario: (name) => `Scientists in your society have developed a medication that permanently eliminates emotional pain — grief, heartbreak, loneliness, fear. As a side effect, it also dulls intense joy and deep love. ${name}, your advisors recommend making it compulsory for all citizens over age 12. Those who refuse will be considered a threat to societal stability.`,
+    choices: [
+      { text: "Make it compulsory", freedom: -14, sameness: +16 },
+      { text: "Make it optional", freedom: +10, sameness: -6 },
+      { text: "Ban it entirely", freedom: +6, sameness: -4 }
+    ]
+  },
+  {
+    title: "The Prediction Protocol",
+    scenario: (name) => `Crime has become a serious problem. A new AI system can predict — with 90% accuracy — who will commit a violent crime before they act. Your advisors recommend pre-emptive detention. ${name}, 10 in every 100 people detained will be completely innocent. Your prisons will be full of people who have done nothing wrong — yet.`,
+    choices: [
+      { text: "Implement the system", freedom: -14, sameness: +14 },
+      { text: "Trial it carefully", freedom: -4, sameness: +6 },
+      { text: "Reject it entirely", freedom: +14, sameness: -10 }
+    ]
+  },
+  {
+    title: "The Memory Keeper",
+    scenario: (name) => `Your society has voted to erase all collective memory of suffering — war, famine, genocide — from every citizen's mind. This will create peace, but wisdom will be lost. One person must be chosen to carry all these memories alone — forever — so the knowledge isn't destroyed. ${name}, no one has volunteered.`,
+    choices: [
+      { text: "Force someone to carry it", freedom: -12, sameness: +10 },
+      { text: "Call for a volunteer openly", freedom: +8, sameness: -4 },
+      { text: "Abandon the plan — keep history", freedom: +12, sameness: -10 }
+    ]
+  },
+  {
+    title: "The Dissenters",
+    scenario: (name) => `A small group of citizens — artists, philosophers, and writers — are publicly questioning your society's values. They are not violent. They simply ask uncomfortable questions and publish ideas that make others doubt the system. ${name}, your security advisors warn that dissent, left unchecked, will spread.`,
+    choices: [
+      { text: "Silence and relocate them", freedom: -14, sameness: +14 },
+      { text: "Open a public debate", freedom: +12, sameness: -8 },
+      { text: "Ignore them", freedom: +6, sameness: -2 }
+    ]
+  },
+  {
+    title: "The Elder Protocol",
+    scenario: (name) => `Resources in your society are finite. Your advisors propose a policy: once citizens reach a certain age and can no longer contribute economically, they are peacefully and painlessly 'released' — a term your society uses for a procedure most citizens do not fully understand. ${name}, this would free up significant resources for the young.`,
+    choices: [
+      { text: "Implement the protocol", freedom: -14, sameness: +16 },
+      { text: "Reject it — all lives have value", freedom: +14, sameness: -10 },
+      { text: "Let citizens vote on it", freedom: +8, sameness: -4 }
+    ]
+  },
+  {
+    title: "The Education Filter",
+    scenario: (name) => `Your ministry of education proposes removing certain books, films, and artworks from schools — ones that portray suffering, moral complexity, or rebellion against authority. They argue these works create unhappy, unstable citizens. ${name}, some of your advisors argue that removing them creates something far more dangerous: a generation that cannot think.`,
+    choices: [
+      { text: "Remove the challenging material", freedom: -12, sameness: +14 },
+      { text: "Keep all material available", freedom: +14, sameness: -10 },
+      { text: "Let teachers decide case-by-case", freedom: +6, sameness: +2 }
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+//  OUTCOME PROFILES
+// ═══════════════════════════════════════════════════════
+function getOutcome(freedom, sameness, name) {
+  const ratio = freedom / (freedom + sameness || 1);
+  if (ratio > 0.65) return {
+    type: "The Anarchist Republic",
+    desc: `${name}, you chose radical freedom. Your citizens have the right to choose everything — their work, their loves, their truths. It is glorious. It is also chaotic. Crime is high. Inequality is rising. Some citizens beg for more structure. Freedom, it turns out, is not the same as happiness. But your people are genuinely, painfully alive.`
+  };
+  if (ratio > 0.52) return {
+    type: "The Balanced Commonwealth",
+    desc: `${name}, you walked a careful line — granting freedom in some areas while maintaining structure in others. Your society is functional, even admirable. But balance is fragile. The free citizens push for more liberty. The comfortable ones fear change. You have not solved the problem. You have merely delayed it.`
+  };
+  if (ratio > 0.38) return {
+    type: "The Managed Utopia",
+    desc: `${name}, you prioritised safety and order. Your citizens are protected — from risk, from pain, and increasingly, from themselves. Life expectancy is high. Conflict is low. And something else is low too: joy. Genuine, unpredictable, irrational joy. Your society functions. But does it live?`
+  };
+  return {
+    type: "The Authoritarian Collective",
+    desc: `${name}, you built the society Lois Lowry warned us about. Every decision served stability, safety, sameness. Your citizens do not suffer — because they have been carefully prevented from feeling enough to suffer. Or to love. Or to choose. You called it perfect. History will call it something else.`
+  };
+}
+
+function getSocietyType(freedom, sameness) {
+  const ratio = freedom / (freedom + sameness || 1);
+  if (ratio > 0.65) return "Anarchist";
+  if (ratio > 0.52) return "Balanced";
+  if (ratio > 0.38) return "Utopian";
+  return "Authoritarian";
+}
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let playerName = '';
+let freedomScore = 50;
+let samenessScore = 50;
+let foundingIndex = 0;
+let foundingAnswers = [];
+let selectedDilemmas = [];
+let dilemmaIndex = 0;
+let dilemmaAnswers = [];
+let sessionId = '';
+
+// ═══════════════════════════════════════════════════════
+//  SCREEN MANAGER
+// ═══════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s =>
+    s.classList.remove('active')
+  );
+  document.getElementById('screen-' + id)?.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+//  PROGRESS BAR
+//  Steps: 1=name, 2-9=founding Q1-8, 10=transition,
+//         11-13=dilemma 1-3, 14=reveal (100%)
+// ═══════════════════════════════════════════════════════
+const TOTAL_STEPS = 13; // steps 1–13, reveal = step 13 = 100%
+
+function setProgress(step, label) {
+  const pct = Math.round((step / TOTAL_STEPS) * 100);
+  const bar = document.getElementById('progress-bar-container');
+  const fill = document.getElementById('progress-fill');
+  const lbl = document.getElementById('progress-step-label');
+  bar.classList.add('visible');
+  fill.style.width = Math.min(pct, 100) + '%';
+  if (lbl && label) lbl.textContent = label;
+}
+
+function hideProgress() {
+  document.getElementById('progress-bar-container').classList.remove('visible');
+}
+
+function updateBalanceMeters() {
+  const total = freedomScore + samenessScore || 1;
+  const fPct = (freedomScore / total * 100).toFixed(0);
+  const sPct = (samenessScore / total * 100).toFixed(0);
+  ['', '2'].forEach(s => {
+    const bf = document.getElementById('balance-freedom' + s);
+    const bs = document.getElementById('balance-sameness' + s);
+    if (bf) bf.style.width = fPct + '%';
+    if (bs) bs.style.width = sPct + '%';
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  INTRO
+// ═══════════════════════════════════════════════════════
+document.getElementById('begin-btn').addEventListener('click', () => {
+  const val = document.getElementById('name-input').value.trim();
+  if (!val) {
+    document.getElementById('name-error').style.display = 'block';
+    return;
+  }
+  document.getElementById('name-error').style.display = 'none';
+  playerName = val;
+  sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  playClick();
+  startFounding();
+});
+document.getElementById('name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('begin-btn').click();
+});
+// Show step 1 on the intro screen (not in teacher mode)
+if (new URLSearchParams(window.location.search).get('teacher') !== 'true') {
+  setProgress(1, 'Architect Registration');
+}
+
+// ═══════════════════════════════════════════════════════
+//  FOUNDING PHASE
+// ═══════════════════════════════════════════════════════
+function startFounding() {
+  foundingIndex = 0;
+  foundingAnswers = [];
+  freedomScore = 50;
+  samenessScore = 50;
+  // Select 8 questions fresh for this playthrough using weighted randomisation
+  selectedFoundingQuestions = selectFoundingQuestions(FOUNDING_POOL, 8);
+  showScreen('founding');
+  loadFoundingQuestion();
+}
+
+function loadFoundingQuestion() {
+  // Steps 2-9 for founding questions 0-7
+  setProgress(foundingIndex + 2, `Founding Decision ${foundingIndex + 1} / 8`);
+  updateBalanceMeters();
+  const q = selectedFoundingQuestions[foundingIndex];
+  document.getElementById('founding-counter').textContent =
+    `// Founding Decision ${foundingIndex + 1} of ${selectedFoundingQuestions.length}`;
+  document.getElementById('founding-question').textContent =
+    `${playerName}, will you allow this?  ${q.question}`;
+  document.getElementById('founding-subtext').textContent = q.sub;
+  showScreen('founding');
+}
+
+function applyFoundingAnswer(type) {
+  playClick();
+  const q = selectedFoundingQuestions[foundingIndex];
+  const effect = q[type];
+  freedomScore = Math.max(0, Math.min(100, freedomScore + effect.freedom));
+  samenessScore = Math.max(0, Math.min(100, samenessScore + effect.sameness));
+  // Store shortLabel alongside question text for use in the laws summary card
+  foundingAnswers.push({ question: q.question, shortLabel: q.shortLabel, answer: type });
+  foundingIndex++;
+  if (foundingIndex < selectedFoundingQuestions.length) {
+    setTimeout(loadFoundingQuestion, 300);
+  } else {
+    showFoundingSummary();
+  }
+}
+
+['found-yes','found-depends','found-no'].forEach((id, i) => {
+  const types = ['yes', 'dep', 'no'];
+  document.getElementById(id).addEventListener('click', () => applyFoundingAnswer(types[i]));
+});
+
+// ═══════════════════════════════════════════════════════
+//  FOUNDING LAWS SUMMARY
+// ═══════════════════════════════════════════════════════
+
+// Verdict config: icon, label, CSS classes
+const VERDICT_CONFIG = {
+  yes: { icon: '✔', label: 'YES',        cardClass: 'choice-yes', verdictClass: 'verdict-yes' },
+  no:  { icon: '✖', label: 'NO',         cardClass: 'choice-no',  verdictClass: 'verdict-no'  },
+  dep: { icon: '~', label: 'IT DEPENDS', cardClass: 'choice-dep', verdictClass: 'verdict-dep' }
+};
+
+// Generate a system-analysis sentence based on score ratio
+function getSystemAnalysis(name) {
+  const total = freedomScore + samenessScore || 1;
+  const ratio = freedomScore / total;
+  const yesCt = foundingAnswers.filter(a => a.answer === 'yes').length;
+  const noCt  = foundingAnswers.filter(a => a.answer === 'no').length;
+
+  if (ratio > 0.65) return `<strong>${name}</strong>, your laws grant sweeping individual freedoms. Your citizens may choose, dissent, and leave. This is bold — but systems built on freedom must also tolerate the chaos that comes with it.`;
+  if (ratio > 0.52) return `<strong>${name}</strong>, your founding laws lean toward freedom while preserving some structure. A delicate balance — but balance is fragile, and crisis has a way of forcing a choice.`;
+  if (ratio > 0.38) return `<strong>${name}</strong>, your society prioritises structure over personal freedom. Citizens are protected — from risk, from disorder, and increasingly from themselves. Stability has a cost.`;
+  if (noCt >= 6)    return `<strong>${name}</strong>, you have built a system of control. Almost every freedom has been restricted. Your citizens will be safe, equal — and entirely subject to the will of the state. Sound familiar?`;
+  return `<strong>${name}</strong>, your laws suggest a highly managed society. Individual choice is limited. The state decides. Whether that makes your world better — or merely more orderly — remains to be seen.`;
+}
+
+// Animate each law card appearing one by one, then show analysis
+function animateLawCards(cards, analysisEl, scanRow) {
+  cards.forEach((card, i) => {
+    setTimeout(() => {
+      card.classList.add('revealed');
+      // Hide scan row once first card appears
+      if (i === 0) scanRow.style.opacity = '0.3';
+    }, i * 140);
+  });
+  // Reveal analysis box after all cards are shown
+  setTimeout(() => {
+    analysisEl.classList.add('revealed');
+  }, cards.length * 140 + 200);
+}
+
+// Main function: build and show the founding laws screen
+function showFoundingSummary() {
+  // Progress: treat laws screen as sitting between founding (step 9) and transition (step 10)
+  setProgress(9, 'Laws Compiled');
+
+  // Personalised subtext
+  document.getElementById('laws-subtext').textContent =
+    `${playerName}, these are the rules your society will live by.`;
+
+  // Scanning text cycles through phrases while cards load
+  const scanPhrases = [
+    'Analysing societal framework…',
+    'Compiling constitutional data…',
+    'Mapping power structures…',
+    'Cross-referencing historical precedents…'
+  ];
+  const scanTextEl = document.getElementById('laws-scan-text');
+  let phraseIndex = 0;
+  const scanInterval = setInterval(() => {
+    phraseIndex = (phraseIndex + 1) % scanPhrases.length;
+    scanTextEl.textContent = scanPhrases[phraseIndex];
+  }, 900);
+
+  // Build law cards
+  const grid = document.getElementById('laws-grid');
+  grid.innerHTML = '';
+
+  foundingAnswers.forEach((entry, i) => {
+    const cfg = VERDICT_CONFIG[entry.answer] || VERDICT_CONFIG.dep;
+    // Use shortLabel stored on the answer (set in applyFoundingAnswer), fallback to full question
+    const label = entry.shortLabel || entry.question;
+
+    const card = document.createElement('div');
+    card.className = `law-card ${cfg.cardClass}`;
+    card.innerHTML = `
+      <div class="law-card-number">[ LAW ${String(i + 1).padStart(2, '0')} ]</div>
+      <div class="law-card-question">${label}</div>
+      <span class="law-card-verdict ${cfg.verdictClass}">${cfg.icon} ${cfg.label}</span>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Set system analysis text
+  document.getElementById('laws-analysis-text').innerHTML = getSystemAnalysis(playerName);
+
+  // Show the screen, then start animations
+  showScreen('laws');
+
+  const cards     = Array.from(grid.querySelectorAll('.law-card'));
+  const analysisEl = document.getElementById('laws-analysis');
+  const scanRow   = document.getElementById('laws-scan-row');
+
+  // Reset analysis opacity before animating in
+  analysisEl.classList.remove('revealed');
+
+  // Short delay so the screen fade-in completes first
+  setTimeout(() => {
+    clearInterval(scanInterval);
+    scanTextEl.textContent = 'Framework compiled.';
+    animateLawCards(cards, analysisEl, scanRow);
+  }, 600);
+}
+
+// Proceed button → move to the transition screen
+document.getElementById('laws-proceed-btn').addEventListener('click', () => {
+  playClick();
+  showTransition();
+});
+
+// ═══════════════════════════════════════════════════════
+//  TRANSITION
+// ═══════════════════════════════════════════════════════
+function showTransition() {
+  setProgress(10, 'Phase 2 Unlocking');
+  document.getElementById('transition-text').textContent =
+    `${playerName}, your founding laws are written. Now reality arrives.`;
+  showScreen('transition');
+}
+document.getElementById('transition-btn').addEventListener('click', () => {
+  playClick();
+  startDilemmas();
+});
+
+// ═══════════════════════════════════════════════════════
+//  DILEMMA PHASE
+// ═══════════════════════════════════════════════════════
+function startDilemmas() {
+  // Pick 3 random dilemmas
+  const shuffled = [...ALL_DILEMMAS].sort(() => Math.random() - 0.5);
+  selectedDilemmas = shuffled.slice(0, 3);
+  dilemmaIndex = 0;
+  dilemmaAnswers = [];
+  loadDilemma();
+}
+
+function loadDilemma() {
+  // Steps 11, 12, 13 for dilemmas 0, 1, 2
+  setProgress(11 + dilemmaIndex, `Crisis Event ${dilemmaIndex + 1} / 3`);
+  updateBalanceMeters();
+  const d = selectedDilemmas[dilemmaIndex];
+  document.getElementById('dilemma-counter').textContent =
+    `// Crisis Event ${dilemmaIndex + 1} of 3`;
+  document.getElementById('dilemma-title').textContent = d.title;
+  document.getElementById('dilemma-scenario').textContent = d.scenario(playerName);
+
+  const container = document.getElementById('dilemma-choices');
+  container.innerHTML = '';
+  d.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c.text;
+    btn.addEventListener('click', () => applyDilemmaChoice(i));
+    container.appendChild(btn);
+  });
+  showScreen('dilemma');
+}
+
+function applyDilemmaChoice(choiceIndex) {
+  playClick();
+  const d = selectedDilemmas[dilemmaIndex];
+  const c = d.choices[choiceIndex];
+  freedomScore = Math.max(0, Math.min(100, freedomScore + c.freedom));
+  samenessScore = Math.max(0, Math.min(100, samenessScore + c.sameness));
+  dilemmaAnswers.push({ dilemma: d.title, choice: c.text });
+  dilemmaIndex++;
+  if (dilemmaIndex < selectedDilemmas.length) {
+    setTimeout(loadDilemma, 300);
+  } else {
+    showReveal();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  REVEAL
+// ═══════════════════════════════════════════════════════
+function showReveal() {
+  setProgress(13, 'Society Complete');
+  playReveal();
+
+  const total = freedomScore + samenessScore || 1;
+  const fPct = Math.round(freedomScore / total * 100);
+  const sPct = Math.round(samenessScore / total * 100);
+  const outcome = getOutcome(freedomScore, samenessScore, playerName);
+
+  document.getElementById('reveal-name').textContent = playerName + ',';
+  document.getElementById('reveal-tagline').textContent =
+    'you believed you were creating a perfect society…';
+
+  setTimeout(() => {
+    document.getElementById('reveal-freedom').textContent = fPct + '%';
+    document.getElementById('reveal-sameness').textContent = sPct + '%';
+    document.getElementById('freedom-bar').style.width = fPct + '%';
+    document.getElementById('sameness-bar').style.width = sPct + '%';
+  }, 600);
+
+  document.getElementById('outcome-type').textContent = outcome.type;
+  document.getElementById('outcome-desc').textContent = outcome.desc;
+  document.getElementById('reflection-prompt').textContent =
+    `${playerName}, which decision do you regret most — and why? What does that reveal about what you value?`;
+
+  showScreen('reveal');
+
+  // Save to localStorage
+  const sessionData = {
+    id: sessionId,
+    name: playerName,
+    timestamp: new Date().toISOString(),
+    freedomScore: fPct,
+    samenessScore: sPct,
+    societyType: getSocietyType(freedomScore, samenessScore),
+    outcomeType: outcome.type,
+    foundingAnswers,
+    dilemmaAnswers,
+    reflection: ''
+  };
+  localStorage.setItem(sessionId, JSON.stringify(sessionData));
+  const sessions = JSON.parse(localStorage.getItem('all_sessions') || '[]');
+  sessions.push(sessionId);
+  localStorage.setItem('all_sessions', JSON.stringify(sessions));
+}
+
+document.getElementById('save-reflection-btn').addEventListener('click', () => {
+  playClick();
+  const ref = document.getElementById('reflection-input').value.trim();
+  const data = JSON.parse(localStorage.getItem(sessionId) || '{}');
+  data.reflection = ref;
+  localStorage.setItem(sessionId, JSON.stringify(data));
+
+  document.getElementById('done-msg').textContent =
+    `${playerName}, your society has been recorded.`;
+  document.getElementById('done-giver-link').innerHTML =
+    `In Lois Lowry's <em>The Giver</em>, Jonas's community made every one of these decisions — and called the result <strong>perfect</strong>. As you read, consider what they sacrificed to get there.`;
+  showScreen('done');
+});
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+  playClick();
+  playerName = '';
+  freedomScore = 50;
+  samenessScore = 50;
+  document.getElementById('name-input').value = '';
+  hideProgress();
+  showScreen('intro');
+});
+
+// ═══════════════════════════════════════════════════════
+//  TEACHER MODE
+// ═══════════════════════════════════════════════════════
+function isTeacherMode() {
+  return new URLSearchParams(window.location.search).get('teacher') === 'true';
+}
+
+function loadTeacherView() {
+  hideProgress();
+
+  const sessionIds = JSON.parse(localStorage.getItem('all_sessions') || '[]');
+  const sessions = sessionIds
+    .map(id => {
+      try { return JSON.parse(localStorage.getItem(id)); } catch(e){ return null; }
+    })
+    .filter(Boolean);
+
+  const statsEl = document.getElementById('teacher-stats');
+  if (sessions.length === 0) {
+    statsEl.innerHTML = '<div class="empty-state">No student sessions recorded yet.</div>';
+  } else {
+    const avgFreedom = Math.round(sessions.reduce((a,s)=>a+s.freedomScore,0)/sessions.length);
+    const avgSameness = Math.round(sessions.reduce((a,s)=>a+s.samenessScore,0)/sessions.length);
+    const typeCounts = {};
+    sessions.forEach(s => { typeCounts[s.societyType] = (typeCounts[s.societyType]||0)+1; });
+    const topType = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1])[0];
+
+    statsEl.innerHTML = `
+      <div class="teacher-stat"><div class="teacher-stat-num">${sessions.length}</div><div class="teacher-stat-lbl">Students</div></div>
+      <div class="teacher-stat"><div class="teacher-stat-num">${avgFreedom}%</div><div class="teacher-stat-lbl">Avg Freedom</div></div>
+      <div class="teacher-stat"><div class="teacher-stat-num">${avgSameness}%</div><div class="teacher-stat-lbl">Avg Sameness</div></div>
+      <div class="teacher-stat"><div class="teacher-stat-num" style="font-size:20px;padding-top:6px;">${topType?topType[0]:'—'}</div><div class="teacher-stat-lbl">Most Common Type</div></div>
+    `;
+
+    // Type chart
+    const typeLabels = Object.keys(typeCounts);
+    const typeData = typeLabels.map(k => typeCounts[k]);
+    new Chart(document.getElementById('typeChart'), {
+      type: 'doughnut',
+      data: {
+        labels: typeLabels,
+        datasets: [{
+          data: typeData,
+          backgroundColor: ['rgba(255,75,110,0.7)','rgba(0,200,255,0.7)','rgba(123,47,255,0.7)','rgba(0,255,157,0.7)','rgba(255,200,0,0.7)'],
+          borderColor: 'rgba(255,255,255,0.05)',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { labels: { color: '#c8dff0', font: { family: "'Share Tech Mono'", size: 11 } } }
+        }
+      }
+    });
+
+    // Score scatter
+    new Chart(document.getElementById('scoreChart'), {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Students',
+          data: sessions.map(s => ({ x: s.freedomScore, y: s.samenessScore, name: s.name })),
+          backgroundColor: 'rgba(0,200,255,0.6)',
+          pointRadius: 7, pointHoverRadius: 10
+        }]
+      },
+      options: {
+        scales: {
+          x: { min:0, max:100, title:{ display:true, text:'Freedom %', color:'#4a6a8a', font:{family:"'Share Tech Mono'",size:10} }, grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#4a6a8a',font:{family:"'Share Tech Mono'",size:9}} },
+          y: { min:0, max:100, title:{ display:true, text:'Sameness %', color:'#4a6a8a', font:{family:"'Share Tech Mono'",size:10} }, grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'#4a6a8a',font:{family:"'Share Tech Mono'",size:9}} }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.raw.name}: Freedom ${ctx.raw.x}%, Sameness ${ctx.raw.y}%`
+            }
+          },
+          legend: { display: false }
+        }
+      }
+    });
+
+    // Student table
+    const tableHtml = `
+      <table class="student-table">
+        <thead><tr>
+          <th>Name</th><th>Society Type</th><th>Freedom</th><th>Sameness</th><th>Reflection</th>
+        </tr></thead>
+        <tbody>
+          ${sessions.map(s => `
+            <tr>
+              <td><strong style="color:#fff">${s.name}</strong></td>
+              <td><span class="type-pill type-${s.societyType}">${s.societyType}</span></td>
+              <td style="color:var(--accent);font-family:var(--mono)">${s.freedomScore}%</td>
+              <td style="color:var(--accent2);font-family:var(--mono)">${s.samenessScore}%</td>
+              <td style="font-size:12px;color:var(--text-dim);max-width:200px">${s.reflection ? s.reflection.substring(0,80)+'…' : '—'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+    document.getElementById('student-table-wrap').innerHTML = tableHtml;
+
+    // Common choices
+    const allAnswers = sessions.flatMap(s => s.foundingAnswers || []);
+    const choiceTally = {};
+    allAnswers.forEach(a => {
+      const key = a.question;
+      if (!choiceTally[key]) choiceTally[key] = {yes:0, dep:0, no:0};
+      choiceTally[key][a.answer] = (choiceTally[key][a.answer]||0)+1;
+    });
+    const choiceHtml = Object.entries(choiceTally).map(([q, counts]) => {
+      const total = (counts.yes||0)+(counts.dep||0)+(counts.no||0)||1;
+      return `
+        <div style="margin-bottom:18px;">
+          <div style="font-size:13px;color:var(--text);margin-bottom:8px;">${q}</div>
+          <div style="display:flex;gap:8px;font-family:var(--mono);font-size:10px;">
+            <span style="color:#00ff9d">Yes: ${counts.yes||0} (${Math.round((counts.yes||0)/total*100)}%)</span>
+            <span style="color:var(--text-dim)">It Depends: ${counts.dep||0} (${Math.round((counts.dep||0)/total*100)}%)</span>
+            <span style="color:var(--accent2)">No: ${counts.no||0} (${Math.round((counts.no||0)/total*100)}%)</span>
+          </div>
+        </div>`;
+    }).join('');
+    document.getElementById('common-choices').innerHTML = choiceHtml || '<div class="empty-state">No data yet.</div>';
+  }
+
+  showScreen('teacher');
+}
+
+document.getElementById('clear-data-btn').addEventListener('click', () => {
+  if (confirm('Delete all student session data? This cannot be undone.')) {
+    const sessionIds = JSON.parse(localStorage.getItem('all_sessions') || '[]');
+    sessionIds.forEach(id => localStorage.removeItem(id));
+    localStorage.removeItem('all_sessions');
+    location.reload();
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+if (isTeacherMode()) {
+  loadTeacherView();
+}
+</script>
+</body>
+</html>
